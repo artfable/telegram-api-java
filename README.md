@@ -1,5 +1,5 @@
 # Telegram Bot Api
-Simple wrapper for using telegram api with java ([Telegram Api](https://core.telegram.org/bots/api)). Version: 0.0.1 Bot API version: 2.3.1
+Simple wrapper for using telegram api with java ([Telegram Api](https://core.telegram.org/bots/api)). Version: 0.0.2 Bot API version: 2.3.1
 
 Requirements:
 For compilation: 

@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,12 +32,17 @@ public abstract class AbstractTelegramBot implements TelegramBot {
         this.behaviors = behaviors;
     }
 
+    @PostConstruct
+    private void init() {
+        this.behaviors.forEach(behavior -> behavior.init(token, restTemplate));
+    }
+
     @Override
     @Async
-    public void subscribeToUpdates(Integer lastId) {
+    public void subscribeToUpdates(Long lastId) {
         Map<String, String> urlParams = new HashMap<>(4);
         urlParams.put("token", token);
-        urlParams.put("method", "getUpdates");
+        urlParams.put("method", TelegramBotMethod.GET_UPDATES.getValue());
 
         Map<String, Object> queryParams = new HashMap<>(4);
         queryParams.put("timeout", "100");
@@ -47,30 +51,16 @@ public abstract class AbstractTelegramBot implements TelegramBot {
         }
 
         try {
-            TelegramResponse response = restTemplate.getForObject(getUri(URL, urlParams, queryParams), TelegramResponse.class);
-            log.info("Correct response: " + response.getOk());
+            TelegramUpdateResponse response = restTemplate.getForObject(UrlHelper.getUri(URL, urlParams, queryParams), TelegramUpdateResponse.class);
+            log.debug("Correct response: " + response.getOk());
 
             List<Update> result = response.getResult();
-            Integer updateId = result.isEmpty() ? null : result.get(result.size() - 1).getUpdateId();
+            Long updateId = result.isEmpty() ? null : result.get(result.size() - 1).getUpdateId();
             behaviors.parallelStream().filter(Behavior::isSubscribed).forEach(behavior -> behavior.parse(result));
 
             subscribeToUpdates(updateId);
         } catch (HttpClientErrorException e) {
             log.error("Can't get updates", e);
         }
-    }
-
-    private URI getUri(String url, Map<String, String> urlParams, Map<String, Object> queryParams) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-
-        if (queryParams != null) {
-            queryParams.forEach(builder::queryParam);
-        }
-
-        return builder.buildAndExpand(urlParams).encode().toUri();
-    }
-
-    private URI getUri(String url, Map<String, String> urlParams) {
-        return getUri(url, urlParams, null);
     }
 }

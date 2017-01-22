@@ -12,5 +12,5 @@ public interface TelegramBot {
      *
      * @see org.springframework.scheduling.annotation.Async
      */
-    void subscribeToUpdates(Integer lastId);
+    void subscribeToUpdates(Long lastId);
 }

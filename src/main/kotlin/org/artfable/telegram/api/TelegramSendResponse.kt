@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
 /**
+ * Telegram answer for send's methods.
+ *
  * @author artfable
- * 22.01.17
+ * 23.01.17
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class TelegramResponse(@JsonProperty("ok") val ok: Boolean, @JsonProperty("result") val result: List<Update>)
+data class TelegramSendResponse(@JsonProperty("ok") val ok: Boolean, @JsonProperty("result") val result: Message)
