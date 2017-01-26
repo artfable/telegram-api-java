@@ -1,6 +1,6 @@
 package org.artfable.telegram.api;
 
-import org.springframework.web.client.RestTemplate;
+import org.artfable.telegram.api.service.TelegramSender;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface Behavior {
 
-    void init(String token, RestTemplate restTemplate);
+    void init(TelegramSender telegramSender);
 
     void parse(List<Update> updates);
 

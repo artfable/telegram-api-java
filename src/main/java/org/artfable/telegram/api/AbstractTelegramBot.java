@@ -1,8 +1,11 @@
 package org.artfable.telegram.api;
 
+import org.artfable.telegram.api.service.TelegramSender;
+import org.artfable.telegram.api.service.TelegramSenderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -23,9 +26,13 @@ public abstract class AbstractTelegramBot implements TelegramBot {
 
     private String token;
     private Set<Behavior> behaviors;
+    private TelegramSender telegramSender;
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private TaskExecutor taskExecutor;
 
     public AbstractTelegramBot(String token, Set<Behavior> behaviors) {
         this.token = token;
@@ -34,7 +41,8 @@ public abstract class AbstractTelegramBot implements TelegramBot {
 
     @PostConstruct
     private void init() {
-        this.behaviors.forEach(behavior -> behavior.init(token, restTemplate));
+        this.telegramSender = new TelegramSenderImpl(restTemplate, token);
+        this.behaviors.forEach(behavior -> behavior.init(telegramSender));
     }
 
     @Override
@@ -58,7 +66,7 @@ public abstract class AbstractTelegramBot implements TelegramBot {
             Long updateId = result.isEmpty() ? null : result.get(result.size() - 1).getUpdateId();
             behaviors.parallelStream().filter(Behavior::isSubscribed).forEach(behavior -> behavior.parse(result));
 
-            subscribeToUpdates(updateId);
+            taskExecutor.execute(() -> this.subscribeToUpdates(updateId));
         } catch (HttpClientErrorException e) {
             log.error("Can't get updates", e);
         }
