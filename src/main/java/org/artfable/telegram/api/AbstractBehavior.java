@@ -20,9 +20,10 @@ public abstract class AbstractBehavior implements Behavior {
         return subscribed;
     }
 
-    @Override
+    @Override // TODO: package
     public void init(TelegramSender telegramSender) {
         this.telegramSender = telegramSender;
+        start();
     }
 
 

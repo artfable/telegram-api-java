@@ -12,6 +12,8 @@ public interface Behavior {
 
     void init(TelegramSender telegramSender);
 
+    void start();
+
     void parse(List<Update> updates);
 
     boolean isSubscribed();
