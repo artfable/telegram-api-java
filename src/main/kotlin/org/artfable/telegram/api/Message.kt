@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Message(
         @JsonProperty("message_id") val messageId: Long,
+        @JsonProperty("from") val from: User?,
+        @JsonProperty("forward_from") val forwardFrom: User?,
         @JsonProperty("date") val date: Int,
         @JsonProperty("chat") val chat: Chat,
         @JsonProperty("reply_to_message") val replyToMessage: Message?,
@@ -26,8 +28,6 @@ data class Message(
         @JsonProperty("pinned_message") val pinnedMessage: Message?
 )
 
-//from	User
-//forward_from	User
 //forward_from_chat	Chat
 //forward_from_message_id	Integer
 //forward_date	Integer
