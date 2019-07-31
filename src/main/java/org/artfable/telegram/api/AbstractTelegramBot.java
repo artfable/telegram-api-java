@@ -26,6 +26,7 @@ public abstract class AbstractTelegramBot implements TelegramBot {
 
     private String token;
     private Set<Behavior> behaviors;
+    private boolean skipFailed;
     private TelegramSender telegramSender;
 
     @Autowired
@@ -35,8 +36,13 @@ public abstract class AbstractTelegramBot implements TelegramBot {
     private TaskExecutor taskExecutor;
 
     public AbstractTelegramBot(String token, Set<Behavior> behaviors) {
+        this(token, behaviors, false);
+    }
+
+    public AbstractTelegramBot(String token, Set<Behavior> behaviors, boolean skipFailed) {
         this.token = token;
         this.behaviors = behaviors;
+        this.skipFailed = skipFailed;
     }
 
     @PostConstruct
@@ -64,11 +70,21 @@ public abstract class AbstractTelegramBot implements TelegramBot {
 
             List<Update> result = response.getResult();
             Long updateId = result.isEmpty() ? null : result.get(result.size() - 1).getUpdateId();
-            behaviors.parallelStream().filter(Behavior::isSubscribed).forEach(behavior -> behavior.parse(result));
+
+            try {
+                behaviors.parallelStream().filter(Behavior::isSubscribed).forEach(behavior -> behavior.parse(result));
+            } catch (HttpClientErrorException e) {
+                if (skipFailed) {
+                    log.error("Can't parse updates", e);
+                    taskExecutor.execute(() -> this.subscribeToUpdates(updateId));
+                } else {
+                    throw e;
+                }
+            }
 
             taskExecutor.execute(() -> this.subscribeToUpdates(updateId));
         } catch (HttpClientErrorException e) {
-            log.error("Can't get updates", e);
+            log.error("Can't parse updates", e);
         }
     }
 }

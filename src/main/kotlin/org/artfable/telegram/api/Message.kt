@@ -17,6 +17,7 @@ data class Message(
         @JsonProperty("reply_to_message") val replyToMessage: Message?,
         @JsonProperty("edit_date") val editDate: Int?,
         @JsonProperty("text") val text: String?,
+        @JsonProperty("sticker") val sticker: Sticker?,
         @JsonProperty("caption") val caption: String?,
         @JsonProperty("new_chat_title") val newChartTitle: String?,
         @JsonProperty("delete_chat_photo") val deleteChatPhoto: Boolean?,

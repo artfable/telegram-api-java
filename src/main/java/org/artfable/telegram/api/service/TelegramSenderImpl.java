@@ -32,6 +32,11 @@ public class TelegramSenderImpl implements TelegramSender {
         urlParams.put("token", token);
         urlParams.put("method", method.getValue());
 
+        if (method == TelegramBotMethod.DELETE_MESSAGE) {
+            log.debug(restTemplate.postForObject(UrlHelper.getUri(TelegramBot.URL, urlParams), queryParams, String.class));
+            return null;
+        }
+
         switch (httpMethod) {
             case GET:
                 return restTemplate.getForObject(UrlHelper.getUri(TelegramBot.URL, urlParams, queryParams), TelegramSendResponse.class);

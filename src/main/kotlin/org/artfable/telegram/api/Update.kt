@@ -13,5 +13,6 @@ data class Update(
         @JsonProperty("message") val message: Message?,
         @JsonProperty("edited_message") val editedMessage: Message?,
         @JsonProperty("channel_post") val channelPost: Message?,
-        @JsonProperty("edited_channel_post") val editedChannelPost: Message?
+        @JsonProperty("edited_channel_post") val editedChannelPost: Message?,
+        @JsonProperty("callback_query") val callbackQuery: CallbackQuery?
 )
