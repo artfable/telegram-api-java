@@ -1,4 +1,4 @@
-# Telegram Bot Api (Version: 0.1.1)
+# Telegram Bot Api (Version: 0.1.3)
 Simple wrapper for using telegram api with java ([Telegram Api](https://core.telegram.org/bots/api)). Bot API version: 2.3.1
 
 Requirements:
