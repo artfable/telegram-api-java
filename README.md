@@ -2,11 +2,9 @@
 Simple wrapper for using telegram api with java ([Telegram Api](https://core.telegram.org/bots/api)). Bot API version: 2.3.1
 
 Requirements:
-For compilation: 
-* Java 8
-* Gradle 3.*
+* Java 11
 
-*Note! [Kotlin 1.0.6](http://kotlinlang.org/) used as well. However, you can don't care about it, if you don't want to modify.*
+*Note! [Kotlin 1.3.72](http://kotlinlang.org/) used as well. However, you can don't care about it, if you don't want to modify.*
 
 For use: (All provided by [Spring Framework](https://spring.io/))
 * EnableAsync (Spring)
