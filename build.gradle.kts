@@ -20,11 +20,11 @@ apply(plugin = "artfable.artifact")
 apply(plugin = "maven-publish")
 
 group = "org.artfable"
-version = "0.1.3"
+version = "0.1.4"
 
 val kotlin_version = "1.3.72"
-val spring_version = "5.2.7.RELEASE"
-val jackson_version = "2.8.6"
+val spring_version = "5.2.8.RELEASE"
+val jackson_version = "2.11.1"
 val slf4j_version = "1.7.22"
 val javax_annotation_version = "1.3.2"
 
@@ -37,7 +37,7 @@ dependencies {
     implementation("org.springframework:spring-context:$spring_version")
     implementation("org.springframework:spring-core:$spring_version")
     implementation("org.springframework:spring-web:$spring_version")
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jackson_version")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
     implementation("org.slf4j:slf4j-api:$slf4j_version")
 
     testImplementation("junit:junit:$junit_version")
@@ -62,7 +62,7 @@ configure<PublishingExtension> {
             artifact(tasks["javadocJar"])
             groupId = "org.artfable"
             artifactId = "telegram-api"
-            version = "0.1.4-SNAPSHOT"
+            version = "0.1.5-SNAPSHOT"
         }
     }
 }

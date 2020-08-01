@@ -15,4 +15,12 @@ data class Update(
         @JsonProperty("channel_post") val channelPost: Message?,
         @JsonProperty("edited_channel_post") val editedChannelPost: Message?,
         @JsonProperty("callback_query") val callbackQuery: CallbackQuery?
-)
+) {
+    fun extractMessage(): Message? {
+        return message
+                ?: editedMessage
+                ?: channelPost
+                ?: editedChannelPost
+                ?: callbackQuery?.message
+    }
+}

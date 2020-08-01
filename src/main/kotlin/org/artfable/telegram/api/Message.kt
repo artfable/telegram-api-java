@@ -2,6 +2,7 @@ package org.artfable.telegram.api
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import org.artfable.telegram.api.keyboard.InlineKeyboard
 
 /**
  * @author artfable
@@ -26,7 +27,8 @@ data class Message(
         @JsonProperty("channel_chat_created") val channelChatCreated: Boolean?,
         @JsonProperty("migrate_to_chat_id") val migrateToChatId: Long?,
         @JsonProperty("migrate_from_chat_id") val migrateFromChatId: Long?,
-        @JsonProperty("pinned_message") val pinnedMessage: Message?
+        @JsonProperty("pinned_message") val pinnedMessage: Message?,
+        @JsonProperty("reply_markup") val keyboard: InlineKeyboard?
 )
 
 //forward_from_chat	Chat
