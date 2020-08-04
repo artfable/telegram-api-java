@@ -1,4 +1,4 @@
-# Telegram Bot Api (Version: 0.1.3)
+# Telegram Bot Api (Version: 0.2.0)
 Simple wrapper for using telegram api with java ([Telegram Api](https://core.telegram.org/bots/api)). Bot API version: 2.3.1
 
 Requirements:
@@ -11,3 +11,5 @@ For use: (All provided by [Spring Framework](https://spring.io/))
 * Configure Slf4j
 * Create RestTemplate bean (spring-web)
 * Create TaskExecutor bean
+
+For start create instance of LongPollingTelegramBot or WebhookTelegramBot.

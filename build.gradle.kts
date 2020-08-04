@@ -20,7 +20,7 @@ apply(plugin = "artfable.artifact")
 apply(plugin = "maven-publish")
 
 group = "org.artfable"
-version = "0.1.4"
+version = "0.2.0"
 
 val kotlin_version = "1.3.72"
 val spring_version = "5.2.8.RELEASE"
@@ -62,7 +62,7 @@ configure<PublishingExtension> {
             artifact(tasks["javadocJar"])
             groupId = "org.artfable"
             artifactId = "telegram-api"
-            version = "0.1.5-SNAPSHOT"
+            version = project.version.toString()
         }
     }
 }
