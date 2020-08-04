@@ -10,6 +10,7 @@ import org.artfable.telegram.api.Message;
 import org.artfable.telegram.api.TelegramBotMethod;
 import org.artfable.telegram.api.TelegramSendResponse;
 import org.artfable.telegram.api.UrlHelper;
+import org.artfable.telegram.api.request.TelegramRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -36,33 +37,28 @@ public class TelegramSenderImpl implements TelegramSender {
     }
 
     @Override
-    public TelegramSendResponse send(HttpMethod httpMethod, TelegramBotMethod method, Map<String, Object> queryParams) {
-        Map<String, String> urlParams = new HashMap<>(2);
-        urlParams.put("token", token);
-        urlParams.put("method", method.getValue());
-
-        if (method.getManager()) {
-            log.debug(restTemplate.postForObject(UrlHelper.getUri(URL, urlParams), queryParams, String.class));
+    public TelegramSendResponse send(TelegramRequest telegramRequest) {
+        if (telegramRequest.getMethod().getManager()) {
+            log.debug(restTemplate.patchForObject(UrlHelper.getUri(URL, getUrlParams(telegramRequest.getMethod())), telegramRequest, String.class));
             return null;
         }
 
-        switch (httpMethod) {
-            case GET:
-                return restTemplate.getForObject(UrlHelper.getUri(URL, urlParams, queryParams), TelegramSendResponse.class);
-            case POST:
-                return restTemplate.postForObject(UrlHelper.getUri(URL, urlParams), queryParams, TelegramSendResponse.class);
-            default:
-                throw new UnsupportedOperationException("Telegram Api works only with GET and POST methods");
-        }
+        return restTemplate.postForObject(UrlHelper.getUri(URL, getUrlParams(telegramRequest.getMethod())), telegramRequest, TelegramSendResponse.class);
     }
 
     @Override
-    public TelegramSendResponse send(HttpMethod httpMethod, TelegramBotMethod method, HttpEntity httpEntity) {
-        Map<String, String> urlParams = new HashMap<>(2);
-        urlParams.put("token", token);
-        urlParams.put("method", method.getValue());
+    public TelegramSendResponse send(HttpMethod httpMethod, TelegramBotMethod method, Map<String, Object> queryParams) {
+        if (method.getManager()) {
+            log.debug(send(httpMethod, getUrlParams(method), queryParams, String.class));
+            return null;
+        }
 
-        log.debug(restTemplate.postForObject(UrlHelper.getUri(URL, urlParams), httpEntity, String.class));
+        return send(httpMethod, getUrlParams(method), queryParams, TelegramSendResponse.class);
+    }
+
+    @Override
+    public TelegramSendResponse send(TelegramBotMethod method, HttpEntity httpEntity) {
+        log.debug(restTemplate.postForObject(UrlHelper.getUri(URL, getUrlParams(method)), httpEntity, String.class));
         return null;
     }
 
@@ -77,5 +73,23 @@ public class TelegramSenderImpl implements TelegramSender {
             }
         }
         return null;
+    }
+
+    private <T> T send(HttpMethod httpMethod, Map<String, String> urlParams, Map<String, Object> queryParams, Class<T> responseClass) {
+        switch (httpMethod) {
+            case GET:
+                return restTemplate.getForObject(UrlHelper.getUri(URL, urlParams, queryParams), responseClass);
+            case POST:
+                return restTemplate.postForObject(UrlHelper.getUri(URL, urlParams), queryParams, responseClass);
+            default:
+                throw new UnsupportedOperationException("Telegram Api works only with GET and POST methods");
+        }
+    }
+
+    private Map<String, String> getUrlParams(TelegramBotMethod method) {
+        return Map.of(
+                "token", token,
+                "method", method.getValue()
+        );
     }
 }

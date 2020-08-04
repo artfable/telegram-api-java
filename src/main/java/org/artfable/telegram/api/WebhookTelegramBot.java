@@ -67,7 +67,7 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
             body.add("certificate", cert);
         }
 
-        telegramSender.send(HttpMethod.POST, TelegramBotMethod.SET_WEBHOOK, new HttpEntity<MultiValueMap<String, Object>>(body, headers));
+        telegramSender.send(TelegramBotMethod.SET_WEBHOOK, new HttpEntity<MultiValueMap<String, Object>>(body, headers));
     }
 
     @PreDestroy
