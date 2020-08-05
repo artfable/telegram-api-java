@@ -6,13 +6,13 @@ package org.artfable.telegram.api
  * @author artfable
  * 22.01.17
  */
-enum class TelegramBotMethod(val value: String, val manager: Boolean = false) {
+enum class TelegramBotMethod(val value: String) {
     GET_UPDATES("getUpdates"),
     SEND_MESSAGE("sendMessage"),
-    DELETE_MESSAGE("deleteMessage", true),
+    DELETE_MESSAGE("deleteMessage"),
     SEND_STICKER("sendSticker"),
 
 //    Webhook
-    SET_WEBHOOK("setWebhook", true),
-    DELETE_WEBHOOK("deleteWebhook", true)
+    SET_WEBHOOK("setWebhook"),
+    DELETE_WEBHOOK("deleteWebhook")
 }

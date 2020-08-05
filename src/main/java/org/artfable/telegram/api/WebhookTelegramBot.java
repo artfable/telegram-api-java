@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.artfable.telegram.api.request.DeleteWebhookRequest;
+import org.artfable.telegram.api.request.SetWebhookRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -57,22 +59,12 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
 
     @PostConstruct
     private void setWebhook() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("url", url);
-
-        if (cert != null) {
-            body.add("certificate", cert);
-        }
-
-        telegramSender.send(TelegramBotMethod.SET_WEBHOOK, new HttpEntity<MultiValueMap<String, Object>>(body, headers));
+        telegramSender.executeMethod(new SetWebhookRequest(url, cert));
     }
 
     @PreDestroy
     private void removeWebhook() {
-        telegramSender.send(HttpMethod.POST, TelegramBotMethod.DELETE_WEBHOOK, Collections.emptyMap());
+        telegramSender.executeMethod(new DeleteWebhookRequest());
     }
 
     @PostMapping

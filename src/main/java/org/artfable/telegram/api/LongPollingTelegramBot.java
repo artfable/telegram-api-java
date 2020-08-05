@@ -5,14 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.artfable.telegram.api.request.GetUpdatesRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.client.HttpClientErrorException;
-
-import static org.artfable.telegram.api.service.TelegramSender.URL;
 
 /**
  * Works with Telegram API through long polling. This implementation should be used also for bots that don't need to receive updates.
@@ -44,21 +43,8 @@ public abstract class LongPollingTelegramBot extends AbstractTelegramBot {
      */
     @Async
     public void subscribeToUpdates(Long lastId) {
-        Map<String, String> urlParams = new HashMap<>(4);
-        urlParams.put("token", token);
-        urlParams.put("method", TelegramBotMethod.GET_UPDATES.getValue());
-
-        Map<String, Object> queryParams = new HashMap<>(4);
-        queryParams.put("timeout", "100");
-        if (lastId != null) {
-            queryParams.put("offset", lastId + 1);
-        }
-
         try {
-            TelegramUpdateResponse response = restTemplate.getForObject(UrlHelper.getUri(URL, urlParams, queryParams), TelegramUpdateResponse.class);
-            log.debug("Correct response: " + response.getOk());
-
-            List<Update> result = response.getResult();
+            List<Update> result = telegramSender.executeMethod(new GetUpdatesRequest(lastId != null ? lastId + 1 : null, 100, null));
             Long updateId = result.isEmpty() ? null : result.get(result.size() - 1).getUpdateId();
 
             try {

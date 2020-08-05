@@ -1,21 +1,21 @@
 package org.artfable.telegram.api.service;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.artfable.telegram.api.Message;
 import org.artfable.telegram.api.TelegramBotMethod;
-import org.artfable.telegram.api.TelegramSendResponse;
+import org.artfable.telegram.api.TelegramRequestException;
+import org.artfable.telegram.api.TelegramServerException;
 import org.artfable.telegram.api.UrlHelper;
 import org.artfable.telegram.api.request.TelegramRequest;
+import org.artfable.telegram.api.TelegramResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -37,33 +37,48 @@ public class TelegramSenderImpl implements TelegramSender {
     }
 
     @Override
-    public TelegramSendResponse send(TelegramRequest telegramRequest) {
-        if (telegramRequest.getMethod().getManager()) {
-            log.debug(restTemplate.patchForObject(UrlHelper.getUri(URL, getUrlParams(telegramRequest.getMethod())), telegramRequest, String.class));
-            return null;
+    public <T> T executeMethod(TelegramRequest telegramRequest) {
+        log.debug("Sending request " + telegramRequest);
+
+        TelegramResponse<T> response = null;
+        try {
+            response = send(telegramRequest);
+        } catch (Exception e) {
+            throw new TelegramServerException("Can't execute request", e);
         }
 
-        return restTemplate.postForObject(UrlHelper.getUri(URL, getUrlParams(telegramRequest.getMethod())), telegramRequest, TelegramSendResponse.class);
+        log.debug("Get response " + response);
+
+        if (response.getOk()) {
+            return response.getResult();
+        } else {
+            if (response.getErrorCode() == null || response.getDescription() == null) {
+                throw new TelegramServerException("Invalid response format for request " + telegramRequest.toString());
+            }
+            throw new TelegramRequestException(response.getErrorCode(), response.getDescription());
+        }
     }
 
     @Override
-    public TelegramSendResponse send(HttpMethod httpMethod, TelegramBotMethod method, Map<String, Object> queryParams) {
-        if (method.getManager()) {
-            log.debug(send(httpMethod, getUrlParams(method), queryParams, String.class));
-            return null;
-        }
-
-        return send(httpMethod, getUrlParams(method), queryParams, TelegramSendResponse.class);
+    public <T> TelegramResponse<T> send(TelegramRequest telegramRequest) {
+        return (TelegramResponse<T>) restTemplate
+                .exchange(UrlHelper.getUri(URL, getUrlParams(telegramRequest.getMethod())), HttpMethod.POST, telegramRequest.asEntity(), telegramRequest.getResponseType())
+                .getBody();
     }
 
     @Override
-    public TelegramSendResponse send(TelegramBotMethod method, HttpEntity httpEntity) {
+    public TelegramResponse send(HttpMethod httpMethod, TelegramBotMethod method, Map<String, Object> queryParams) {
+        return send(httpMethod, getUrlParams(method), queryParams, TelegramResponse.class);
+    }
+
+    @Override
+    public TelegramResponse send(TelegramBotMethod method, HttpEntity httpEntity) {
         log.debug(restTemplate.postForObject(UrlHelper.getUri(URL, getUrlParams(method)), httpEntity, String.class));
         return null;
     }
 
     @Override
-    public TelegramSendResponse singleSend(Message forMessage, HttpMethod httpMethod, TelegramBotMethod method, Map<String, Object> queryParams) {
+    public TelegramResponse singleSend(Message forMessage, HttpMethod httpMethod, TelegramBotMethod method, Map<String, Object> queryParams) {
         if (!messages.contains(forMessage)) {
             synchronized (messages) {
                 if (messages.add(forMessage)) {
