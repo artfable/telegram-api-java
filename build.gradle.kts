@@ -1,3 +1,5 @@
+import com.jfrog.bintray.gradle.BintrayExtension
+
 buildscript {
     repositories {
         mavenLocal()
@@ -14,6 +16,7 @@ buildscript {
 plugins {
     java
     kotlin("jvm") version "1.3.72"
+    id("com.jfrog.bintray") version "1.8.5"
 }
 
 apply(plugin = "artfable.artifact")
@@ -65,4 +68,20 @@ configure<PublishingExtension> {
             version = project.version.toString()
         }
     }
+}
+
+configure<BintrayExtension> {
+    user = if (project.hasProperty("bintrayUser")) {
+        project.ext["bintrayUser"] as String
+    } else System.getenv("BINTRAY_USER")
+    key = if (project.hasProperty("bintrayKey")) {
+        project.ext["bintrayKey"] as String
+    } else System.getenv("BINTRAY_KEY")
+    setPublications("mavenJava")
+    pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
+        repo = "telegram-tools"
+        name = "telegram-api"
+        setLicenses("MIT")
+        vcsUrl = "https://github.com/artfable/telegram-api-java.git"
+    })
 }

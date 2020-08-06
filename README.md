@@ -1,4 +1,4 @@
-# Telegram Bot Api (Version: 0.2.0)
+# Telegram Bot Api (Version: 0.2.0) [ ![Download](https://api.bintray.com/packages/artfable/telegram-tools/telegram-api/images/download.svg?version=0.2.0) ](https://bintray.com/artfable/telegram-tools/telegram-api/0.2.0/link)
 Simple wrapper for using telegram api with java ([Telegram Api](https://core.telegram.org/bots/api)). Bot API version: 2.3.1
 
 Requirements:

@@ -59,4 +59,4 @@ data class SetWebhookRequest(
         return result
     }
 }
-// TODO: fields, result, responseType
+// TODO: fields
