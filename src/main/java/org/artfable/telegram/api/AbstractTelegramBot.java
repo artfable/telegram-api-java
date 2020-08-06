@@ -9,6 +9,7 @@ import org.artfable.telegram.api.service.TelegramSenderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -26,6 +27,7 @@ abstract class AbstractTelegramBot {
     TelegramSender telegramSender;
 
     @Autowired
+    @Qualifier("telegramBotRestTemplate")
     RestTemplate restTemplate;
 
     public AbstractTelegramBot(String token, Set<Behavior> behaviors) {

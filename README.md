@@ -9,7 +9,5 @@ Requirements:
 For use: (All provided by [Spring Framework](https://spring.io/))
 * EnableAsync (Spring)
 * Configure Slf4j
-* Create RestTemplate bean (spring-web)
-* Create TaskExecutor bean
 
 For start create instance of LongPollingTelegramBot or WebhookTelegramBot.

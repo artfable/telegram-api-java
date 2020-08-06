@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.artfable.telegram.api.request.GetUpdatesRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 /**
@@ -20,6 +23,7 @@ import org.springframework.web.client.HttpClientErrorException;
  * @author aveselov
  * @since 03/08/2020
  */
+@Service
 public abstract class LongPollingTelegramBot extends AbstractTelegramBot {
 
     private static final Logger log = LoggerFactory.getLogger(LongPollingTelegramBot.class);
@@ -35,14 +39,17 @@ public abstract class LongPollingTelegramBot extends AbstractTelegramBot {
         super(token, behaviors, skipFailed);
     }
 
+    @PostConstruct
+    private void init() {
+        taskExecutor.execute(() -> subscribeToUpdates(null));
+    }
+
     /**
-     * This method starts subscription. Always in a separate thread.
+     * This method starts subscription.
      *
      * @param lastId - id of the last received update, null for start
-     * @see org.springframework.scheduling.annotation.Async
      */
-    @Async
-    public void subscribeToUpdates(Long lastId) {
+    private void subscribeToUpdates(Long lastId) {
         try {
             List<Update> result = telegramSender.executeMethod(new GetUpdatesRequest(lastId != null ? lastId + 1 : null, 100, null));
             Long updateId = result.isEmpty() ? null : result.get(result.size() - 1).getUpdateId();
