@@ -15,4 +15,3 @@ class DeleteWebhookRequest():
         return "DeleteWebhookRequest"
     }
 }
-// TODO: fields, responseType

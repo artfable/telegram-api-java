@@ -6,8 +6,19 @@ Requirements:
 
 *Note! [Kotlin 1.3.72](http://kotlinlang.org/) used as well. However, you can don't care about it, if you don't want to modify.*
 
-For use: (All provided by [Spring Framework](https://spring.io/))
-* EnableAsync (Spring)
-* Configure Slf4j
+Works with [Spring Framework](https://spring.io/)
 
 For start create instance of LongPollingTelegramBot or WebhookTelegramBot.
+Both types require set of Behaviours - services that handling updates and do logic of the bot. 
+
+## LongPollingTelegramBot
+
+Get updates by requesting them. All requests will be done through taskExecutor. 
+
+## WebhookTelegramBot
+
+Automatically setup a webhook (proper configuration should be provided). 
+**_Note!_** You can set up webhook only for https and 443, 80, 88, 8443 ports! (requirement by Telegram)
+ 
+For generating self-signed certificate see [Telegram Bot FAQ](https://core.telegram.org/bots/self-signed). 
+**_Note!_** CN **must** be a domain name or ip address. 

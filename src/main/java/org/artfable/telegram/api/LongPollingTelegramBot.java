@@ -1,8 +1,6 @@
 package org.artfable.telegram.api;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -12,9 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * Works with Telegram API through long polling. This implementation should be used also for bots that don't need to receive updates.
@@ -50,24 +46,21 @@ public abstract class LongPollingTelegramBot extends AbstractTelegramBot {
      * @param lastId - id of the last received update, null for start
      */
     private void subscribeToUpdates(Long lastId) {
+        List<Update> result = telegramSender.executeMethod(new GetUpdatesRequest(lastId != null ? lastId + 1 : null, 100, null, null));
+        Long updateId = result.isEmpty() ? null : result.get(result.size() - 1).getUpdateId();
+
         try {
-            List<Update> result = telegramSender.executeMethod(new GetUpdatesRequest(lastId != null ? lastId + 1 : null, 100, null));
-            Long updateId = result.isEmpty() ? null : result.get(result.size() - 1).getUpdateId();
-
-            try {
-                behaviors.parallelStream().filter(Behavior::isSubscribed).forEach(behavior -> behavior.parse(result));
-            } catch (HttpClientErrorException e) {
-                if (skipFailed) {
-                    log.error("Can't parse updates", e);
-                    taskExecutor.execute(() -> this.subscribeToUpdates(updateId));
-                } else {
-                    throw e;
-                }
+            behaviors.parallelStream().filter(Behavior::isSubscribed).forEach(behavior -> behavior.parse(result));
+        } catch (Exception e) {
+            if (skipFailed) {
+                log.error("Can't parse updates", e);
+                taskExecutor.execute(() -> this.subscribeToUpdates(updateId));
+                return;
+            } else {
+                throw e;
             }
-
-            taskExecutor.execute(() -> this.subscribeToUpdates(updateId));
-        } catch (HttpClientErrorException e) {
-            log.error("Can't parse updates", e);
         }
+
+        taskExecutor.execute(() -> this.subscribeToUpdates(updateId));
     }
 }

@@ -29,7 +29,7 @@ public class TelegramSenderImpl implements TelegramSender {
     private RestTemplate restTemplate;
     private String token;
 
-    private final Set<Message> messages = Collections.newSetFromMap(new WeakHashMap<>());
+    private final Set<Long> updateIds = Collections.newSetFromMap(new WeakHashMap<>());
 
     public TelegramSenderImpl(RestTemplate restTemplate, String token) {
         this.restTemplate = restTemplate;
@@ -38,16 +38,16 @@ public class TelegramSenderImpl implements TelegramSender {
 
     @Override
     public <T> T executeMethod(TelegramRequest telegramRequest) {
-        log.debug("Sending request " + telegramRequest);
+        log.debug("Sending request " + telegramRequest.getId() + " " + telegramRequest);
 
-        TelegramResponse<T> response = null;
+        TelegramResponse<T> response;
         try {
             response = send(telegramRequest);
         } catch (Exception e) {
             throw new TelegramServerException("Can't execute request", e);
         }
 
-        log.debug("Get response " + response);
+        log.debug("Get response (request " + telegramRequest.getId() + ") " + response);
 
         if (response.getOk()) {
             return response.getResult();
@@ -60,45 +60,22 @@ public class TelegramSenderImpl implements TelegramSender {
     }
 
     @Override
-    public <T> TelegramResponse<T> send(TelegramRequest telegramRequest) {
-        return (TelegramResponse<T>) restTemplate
-                .exchange(UrlHelper.getUri(URL, getUrlParams(telegramRequest.getMethod())), HttpMethod.POST, telegramRequest.asEntity(), telegramRequest.getResponseType())
-                .getBody();
-    }
-
-    @Override
-    public TelegramResponse send(HttpMethod httpMethod, TelegramBotMethod method, Map<String, Object> queryParams) {
-        return send(httpMethod, getUrlParams(method), queryParams, TelegramResponse.class);
-    }
-
-    @Override
-    public TelegramResponse send(TelegramBotMethod method, HttpEntity httpEntity) {
-        log.debug(restTemplate.postForObject(UrlHelper.getUri(URL, getUrlParams(method)), httpEntity, String.class));
-        return null;
-    }
-
-    @Override
-    public TelegramResponse singleSend(Message forMessage, HttpMethod httpMethod, TelegramBotMethod method, Map<String, Object> queryParams) {
-        if (!messages.contains(forMessage)) {
-            synchronized (messages) {
-                if (messages.add(forMessage)) {
-                    log.trace("Sender messages in memory: " + messages.size());
-                    return send(httpMethod, method, queryParams);
+    public <T> T singleExecuteMethod(Long forUpdate, TelegramRequest telegramRequest) {
+        if (!updateIds.contains(forUpdate)) {
+            synchronized (updateIds) {
+                if (updateIds.add(forUpdate)) {
+                    log.trace("Used update ids in memory: " + updateIds.size());
+                    return executeMethod(telegramRequest);
                 }
             }
         }
         return null;
     }
 
-    private <T> T send(HttpMethod httpMethod, Map<String, String> urlParams, Map<String, Object> queryParams, Class<T> responseClass) {
-        switch (httpMethod) {
-            case GET:
-                return restTemplate.getForObject(UrlHelper.getUri(URL, urlParams, queryParams), responseClass);
-            case POST:
-                return restTemplate.postForObject(UrlHelper.getUri(URL, urlParams), queryParams, responseClass);
-            default:
-                throw new UnsupportedOperationException("Telegram Api works only with GET and POST methods");
-        }
+    private  <T> TelegramResponse<T> send(TelegramRequest telegramRequest) {
+        return (TelegramResponse<T>) restTemplate
+                .exchange(UrlHelper.getUri(URL, getUrlParams(telegramRequest.getMethod())), HttpMethod.POST, telegramRequest.asEntity(), telegramRequest.getResponseType())
+                .getBody();
     }
 
     private Map<String, String> getUrlParams(TelegramBotMethod method) {

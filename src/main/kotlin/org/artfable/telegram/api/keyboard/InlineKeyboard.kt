@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonProperty
 
 /**
+ * Represent button template that will be sent with a message
+ *
  * @author aveselov
  * @since 01/08/2020
  */

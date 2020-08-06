@@ -59,7 +59,7 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
 
     @PostConstruct
     private void setWebhook() {
-        telegramSender.executeMethod(new SetWebhookRequest(url, cert));
+        telegramSender.executeMethod(new SetWebhookRequest(url, cert, null));
     }
 
     @PreDestroy

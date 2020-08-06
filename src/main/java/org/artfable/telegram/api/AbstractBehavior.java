@@ -3,6 +3,8 @@ package org.artfable.telegram.api;
 import org.artfable.telegram.api.service.TelegramSender;
 
 /**
+ * Main class for behaviour that is used by {@link AbstractTelegramBot}
+ *
  * @author artfable
  *         22.01.17
  */
@@ -20,7 +22,7 @@ public abstract class AbstractBehavior implements Behavior {
         return subscribed;
     }
 
-    @Override // TODO: package
+    @Override
     public void init(TelegramSender telegramSender) {
         this.telegramSender = telegramSender;
         start();

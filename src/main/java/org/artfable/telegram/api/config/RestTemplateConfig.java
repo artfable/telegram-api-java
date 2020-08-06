@@ -9,6 +9,9 @@ import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 /**
+ * Auto configuration that provide {@link RestTemplate} for a bot.
+ * Will be enable by EnableAutoConfiguration with Spring Boot
+ *
  * @author aveselov
  * @since 06/08/2020
  */
