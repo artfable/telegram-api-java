@@ -29,11 +29,11 @@ data class SetWebhookRequest(
 
         val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
         body.add("url", url)
-        body.add("allowed_updates", allowedUpdates)
+        allowedUpdates?.let { body.add("allowed_updates", allowedUpdates) }
 
         body.add("certificate", certificate)
 
-        return HttpEntity(body, headers);
+        return HttpEntity(body, headers)
     }
 
     override fun equals(other: Any?): Boolean {

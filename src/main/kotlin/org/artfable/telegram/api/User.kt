@@ -11,6 +11,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class User (
         @JsonProperty("id") val id: Long,
         @JsonProperty("first_name") val firstName: String,
-        @JsonProperty("last_name") val lastName: String?,
-        @JsonProperty("username") val username: String?
+        @JsonProperty("last_name") val lastName: String? = null,
+        @JsonProperty("username") val username: String? = null
 )

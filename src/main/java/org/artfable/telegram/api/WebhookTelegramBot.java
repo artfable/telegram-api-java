@@ -1,6 +1,5 @@
 package org.artfable.telegram.api;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -12,17 +11,10 @@ import org.artfable.telegram.api.request.SetWebhookRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * Works with Telegram API through webhooks. Start and stop webhook automatically.
@@ -41,16 +33,33 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
     private String url;
     private Resource cert;
 
+    /**
+     * @param url - full url for the webhook
+     *
+     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set)
+     */
     public WebhookTelegramBot(String token, String url, Set<Behavior> behaviors) {
         this(token, url, null, behaviors);
     }
 
+    /**
+     * @param url - full url for the webhook
+     * @param cert - public key (.pem) for the self-signed certificate of a server with the webhook
+     *
+     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set)
+     */
     public WebhookTelegramBot(String token, String url, Resource cert, Set<Behavior> behaviors) {
         super(token, behaviors);
         this.url = url;
         this.cert = cert;
     }
 
+    /**
+     * @param url - full url for the webhook
+     * @param cert - public key (.pem) for the self-signed certificate of a server with the webhook
+     *
+     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, boolean)
+     */
     public WebhookTelegramBot(String token, String url, Resource cert, Set<Behavior> behaviors, boolean skipFailed) {
         super(token, behaviors, skipFailed);
         this.url = url;
@@ -72,7 +81,7 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
         log.debug("Update received: " + update.getUpdateId());
         try {
             behaviors.parallelStream().filter(Behavior::isSubscribed).forEach(behavior -> behavior.parse(List.of(update)));
-        } catch (HttpClientErrorException e) {
+        } catch (Exception e) {
             if (skipFailed) {
                 log.error("Can't parse updates", e);
 

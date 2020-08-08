@@ -9,10 +9,10 @@ import com.fasterxml.jackson.annotation.JsonProperty
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Sticker(
-        @JsonProperty("emoji") val emoji: String?,
-        @JsonProperty("file_id") val stickerId: String?,
-        @JsonProperty("set_name") val collectionName: String?,
-        @JsonProperty("thumb") val thumb: Thumb?
+        @JsonProperty("emoji") val emoji: String? = null,
+        @JsonProperty("file_id") val stickerId: String? = null,
+        @JsonProperty("set_name") val collectionName: String? = null,
+        @JsonProperty("thumb") val thumb: Thumb? = null
 ) {
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class Thumb(

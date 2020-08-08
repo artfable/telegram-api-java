@@ -23,7 +23,7 @@ apply(plugin = "artfable.artifact")
 apply(plugin = "maven-publish")
 
 group = "org.artfable"
-version = "0.2.0"
+version = "0.2.1"
 
 val kotlin_version = "1.3.72"
 val spring_version = "5.2.8.RELEASE"
@@ -31,8 +31,8 @@ val jackson_version = "2.11.1"
 val slf4j_version = "1.7.22"
 val javax_annotation_version = "1.3.2"
 
-val junit_version = "4.11"
-val mockito_version = "2.2.9"
+val junit_version = "5.6.2"
+val mockito_version = "3.4.6"
 
 dependencies {
     implementation("javax.annotation:javax.annotation-api:$javax_annotation_version")
@@ -43,8 +43,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
     implementation("org.slf4j:slf4j-api:$slf4j_version")
 
-    testImplementation("junit:junit:$junit_version")
-    testImplementation("org.mockito:mockito-core:$mockito_version")
+    testImplementation("org.springframework:spring-test:$spring_version")
+    testImplementation("org.junit.jupiter:junit-jupiter:$junit_version")
+    testImplementation("org.mockito:mockito-junit-jupiter:$mockito_version")
 }
 
 repositories {
@@ -55,6 +56,18 @@ repositories {
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
+}
+
+tasks {
+    compileKotlin {
+        kotlinOptions.jvmTarget = "11"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "11"
+    }
+    test {
+        useJUnitPlatform()
+    }
 }
 
 configure<PublishingExtension> {

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class CallbackQuery(
     @JsonProperty("id") val id: Long,
-    @JsonProperty("from") val from: User?,
-    @JsonProperty("data") val data: String?,
-    @JsonProperty("message") val message: Message?
+    @JsonProperty("from") val from: User? = null,
+    @JsonProperty("data") val data: String? = null,
+    @JsonProperty("message") val message: Message? = null
 )

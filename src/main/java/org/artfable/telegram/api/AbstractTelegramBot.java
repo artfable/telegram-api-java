@@ -30,10 +30,19 @@ abstract class AbstractTelegramBot {
     @Qualifier("telegramBotRestTemplate")
     RestTemplate restTemplate;
 
+    /**
+     * {@link #skipFailed} true by default
+     */
     public AbstractTelegramBot(String token, Set<Behavior> behaviors) {
         this(token, behaviors, true);
     }
 
+    /**
+     *
+     * @param token
+     * @param behaviors
+     * @param skipFailed - if true, will continue execution even if some of {@link #behaviors} trows an exception
+     */
     public AbstractTelegramBot(String token, Set<Behavior> behaviors, boolean skipFailed) {
         this.token = token;
         this.behaviors = behaviors;

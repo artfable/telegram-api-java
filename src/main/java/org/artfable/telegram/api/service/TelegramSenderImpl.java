@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.artfable.telegram.api.Message;
 import org.artfable.telegram.api.TelegramBotMethod;
 import org.artfable.telegram.api.TelegramRequestException;
 import org.artfable.telegram.api.TelegramServerException;
@@ -14,7 +13,6 @@ import org.artfable.telegram.api.request.TelegramRequest;
 import org.artfable.telegram.api.TelegramResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 

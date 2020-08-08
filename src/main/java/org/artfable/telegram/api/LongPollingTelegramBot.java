@@ -27,10 +27,16 @@ public abstract class LongPollingTelegramBot extends AbstractTelegramBot {
     @Autowired
     private TaskExecutor taskExecutor;
 
+    /**
+     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set)
+     */
     public LongPollingTelegramBot(String token, Set<Behavior> behaviors) {
         super(token, behaviors);
     }
 
+    /**
+     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, boolean)
+     */
     public LongPollingTelegramBot(String token, Set<Behavior> behaviors, boolean skipFailed) {
         super(token, behaviors, skipFailed);
     }

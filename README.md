@@ -1,4 +1,4 @@
-# Telegram Bot Api (Version: 0.2.0) [ ![Download](https://api.bintray.com/packages/artfable/telegram-tools/telegram-api/images/download.svg?version=0.2.0) ](https://bintray.com/artfable/telegram-tools/telegram-api/0.2.0/link)
+# Telegram Bot Api [ ![Download](https://api.bintray.com/packages/artfable/telegram-tools/telegram-api/images/download.svg?version=0.2.1) ](https://bintray.com/artfable/telegram-tools/telegram-api/0.2.1/link)
 Simple wrapper for using telegram api with java ([Telegram Api](https://core.telegram.org/bots/api)). Bot API version: 2.3.1
 
 Requirements:
@@ -8,14 +8,28 @@ Requirements:
 
 Works with [Spring Framework](https://spring.io/)
 
+## Dependecy
+
+```kotlin
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation("org.artfable:telegram-api:0.2.1")
+}
+```
+
+## Usage
+
 For start create instance of LongPollingTelegramBot or WebhookTelegramBot.
 Both types require set of Behaviours - services that handling updates and do logic of the bot. 
 
-## LongPollingTelegramBot
+### LongPollingTelegramBot
 
 Get updates by requesting them. All requests will be done through taskExecutor. 
 
-## WebhookTelegramBot
+### WebhookTelegramBot
 
 Automatically setup a webhook (proper configuration should be provided). 
 **_Note!_** You can set up webhook only for https and 443, 80, 88, 8443 ports! (requirement by Telegram)

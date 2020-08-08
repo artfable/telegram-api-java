@@ -9,13 +9,13 @@ import com.fasterxml.jackson.annotation.JsonProperty
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Chat(
-        @JsonProperty("id") val id: Long, // In the Telegram Api - Integer, but it's lie!
+        @JsonProperty("id") val id: Long,
         @JsonProperty("type") val type: ChatType,
-        @JsonProperty("title") val title: String?,
-        @JsonProperty("username") val username: String?,
-        @JsonProperty("first_name") val firstName: String?,
-        @JsonProperty("last_name") val lastName: String?,
-        @JsonProperty("all_members_are_administrators") val allMembersAreAdministrators: Boolean?
+        @JsonProperty("title") val title: String? = null,
+        @JsonProperty("username") val username: String? = null,
+        @JsonProperty("first_name") val firstName: String? = null,
+        @JsonProperty("last_name") val lastName: String? = null,
+        @JsonProperty("all_members_are_administrators") val allMembersAreAdministrators: Boolean? = null
 )
 
 
