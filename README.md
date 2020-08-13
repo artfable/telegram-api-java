@@ -8,7 +8,7 @@ Requirements:
 
 Works with [Spring Framework](https://spring.io/)
 
-## Dependecy
+## Dependency
 
 ```kotlin
 repositories {
