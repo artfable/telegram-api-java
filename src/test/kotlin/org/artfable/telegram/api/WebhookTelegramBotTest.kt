@@ -2,6 +2,7 @@ package org.artfable.telegram.api
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.BDDMockito.*
@@ -77,13 +78,13 @@ class WebhookTelegramBotTest {
 
         given(behavior.isSubscribed).willReturn(true)
         given(behavior2.isSubscribed).willReturn(true)
-        given(behavior.parse(eq(listOf(update)))).willThrow(IllegalArgumentException::class.java)
+        given(behavior.parse(eq(listOf(update)))).willThrow(RuntimeException::class.java)
 
-        val responseEntity: ResponseEntity<out Any?>? = ReflectionTestUtils.invokeMethod(webhookTelegramBot, "getUpdate", update)
+        assertThrows<IllegalArgumentException> {
+            ReflectionTestUtils.invokeMethod(webhookTelegramBot, "getUpdate", update)
+        }
 
         verify(behavior2).parse(eq(listOf(update)))
-
-        assertEquals(ResponseEntity.badRequest().build<Any?>(), responseEntity)
     }
 
     private fun createBot(skipFailed: Boolean? = null): WebhookTelegramBot {

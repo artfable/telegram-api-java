@@ -79,7 +79,7 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
     @PostMapping
     public ResponseEntity getUpdate(@RequestBody Update update) {
         log.debug("Update received: " + update.getUpdateId());
-        parse(List.of(update), null);
+        parse(List.of(update));
 
         return ResponseEntity.ok().build();
     }

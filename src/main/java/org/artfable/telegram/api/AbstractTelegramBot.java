@@ -60,7 +60,7 @@ abstract class AbstractTelegramBot {
         this.behaviors.forEach(behavior -> behavior.init(telegramSender));
     }
 
-    protected void parse(List<Update> updates, Runnable skipFailAction) {
+    protected void parse(List<Update> updates) {
         try {
             List<Update> nonProcessedUpdates = updates.parallelStream()
                     .filter(update -> callbackBehaviours.parallelStream().noneMatch(callbackBehaviour -> callbackBehaviour.parse(update)))
@@ -72,9 +72,6 @@ abstract class AbstractTelegramBot {
         } catch (Exception e) {
             if (skipFailed) {
                 log.error("Can't parse updates", e);
-                if (skipFailAction != null) {
-                    skipFailAction.run();
-                }
             } else {
                 throw new IllegalArgumentException("Can't parse updates", e);
             }

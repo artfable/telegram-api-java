@@ -12,4 +12,4 @@ import org.springframework.core.ParameterizedTypeReference
 data class DeleteMessageRequest(
         @JsonProperty("chat_id") val chatId: Long,
         @JsonProperty("message_id") val messageId: Long
-): TelegramRequest(TelegramBotMethod.DELETE_MESSAGE, object: ParameterizedTypeReference<TelegramResponse<Boolean>>() {})
+): TelegramRequest<Boolean>(TelegramBotMethod.DELETE_MESSAGE, object: ParameterizedTypeReference<TelegramResponse<Boolean>>() {})

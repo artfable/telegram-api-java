@@ -55,7 +55,7 @@ public abstract class LongPollingTelegramBot extends AbstractTelegramBot {
         List<Update> result = telegramSender.executeMethod(new GetUpdatesRequest(lastId != null ? lastId + 1 : null, 100, null, null));
         Long updateId = result.isEmpty() ? null : result.get(result.size() - 1).getUpdateId();
 
-        parse(result, () -> taskExecutor.execute(() -> this.subscribeToUpdates(updateId)));
+        parse(result);
 
         taskExecutor.execute(() -> this.subscribeToUpdates(updateId));
     }

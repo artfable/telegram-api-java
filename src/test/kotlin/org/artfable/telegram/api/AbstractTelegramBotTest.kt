@@ -21,9 +21,6 @@ internal class AbstractTelegramBotTest {
     @Mock
     private lateinit var callbackBehaviour: CallbackBehaviour
 
-    @Mock
-    private var skipFailAction: Runnable? = null
-
     @Test
     fun parse_inCallback() {
         val bot = createBot(true)
@@ -31,7 +28,7 @@ internal class AbstractTelegramBotTest {
 
         given(callbackBehaviour.parse(update)).willReturn(true)
 
-        bot.parse(mutableListOf(update), skipFailAction)
+        bot.parse(mutableListOf(update))
 
         verify(behavior, never()).isSubscribed
         verify(behavior, never()).parse(anyList())
@@ -45,7 +42,7 @@ internal class AbstractTelegramBotTest {
         given(behavior.isSubscribed).willReturn(true)
         given(callbackBehaviour.parse(update)).willReturn(false)
 
-        bot.parse(mutableListOf(update), skipFailAction)
+        bot.parse(mutableListOf(update))
 
         verify(behavior).parse(anyList())
     }
@@ -57,9 +54,7 @@ internal class AbstractTelegramBotTest {
 
         given(callbackBehaviour.parse(eq(update))).willThrow(RuntimeException::class.java)
 
-        bot.parse(mutableListOf(update), skipFailAction)
-
-        verify(skipFailAction)?.run()
+        bot.parse(mutableListOf(update))
     }
 
     @Test
@@ -70,23 +65,21 @@ internal class AbstractTelegramBotTest {
         given(callbackBehaviour.parse(eq(update))).willThrow(RuntimeException::class.java)
 
         assertThrows<IllegalArgumentException> {
-            bot.parse(mutableListOf(update), skipFailAction)
+            bot.parse(mutableListOf(update))
         }
-
-        verify(skipFailAction, never())?.run()
     }
 
     private fun createBot(skipFailed: Boolean): AbstractTelegramBot {
         return if (skipFailed) {
             object : AbstractTelegramBot("token", setOf(behavior), setOf(callbackBehaviour)) {
-                public override fun parse(updates: MutableList<Update>?, skipFailAction: Runnable?) {
-                    super.parse(updates, skipFailAction)
+                public override fun parse(updates: MutableList<Update>?) {
+                    super.parse(updates)
                 }
             }
         } else {
             object : AbstractTelegramBot("token", setOf(behavior), setOf(callbackBehaviour), skipFailed) {
-                public override fun parse(updates: MutableList<Update>?, skipFailAction: Runnable?) {
-                    super.parse(updates, skipFailAction)
+                public override fun parse(updates: MutableList<Update>?) {
+                    super.parse(updates)
                 }
             }
         }
