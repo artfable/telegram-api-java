@@ -36,20 +36,20 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
     /**
      * @param url - full url for the webhook
      *
-     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set)
+     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set)
      */
-    public WebhookTelegramBot(String token, String url, Set<Behavior> behaviors) {
-        this(token, url, null, behaviors);
+    public WebhookTelegramBot(String token, String url, Set<Behavior> behaviors, Set<CallbackBehaviour> callbackBehaviours) {
+        this(token, url, null, behaviors, callbackBehaviours);
     }
 
     /**
      * @param url - full url for the webhook
      * @param cert - public key (.pem) for the self-signed certificate of a server with the webhook
      *
-     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set)
+     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set)
      */
-    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behavior> behaviors) {
-        super(token, behaviors);
+    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behavior> behaviors, Set<CallbackBehaviour> callbackBehaviours) {
+        super(token, behaviors, callbackBehaviours);
         this.url = url;
         this.cert = cert;
     }
@@ -58,10 +58,10 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
      * @param url - full url for the webhook
      * @param cert - public key (.pem) for the self-signed certificate of a server with the webhook
      *
-     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, boolean)
+     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set, boolean)
      */
-    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behavior> behaviors, boolean skipFailed) {
-        super(token, behaviors, skipFailed);
+    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behavior> behaviors, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
+        super(token, behaviors, callbackBehaviours, skipFailed);
         this.url = url;
         this.cert = cert;
     }
@@ -79,17 +79,7 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
     @PostMapping
     public ResponseEntity getUpdate(@RequestBody Update update) {
         log.debug("Update received: " + update.getUpdateId());
-        try {
-            behaviors.parallelStream().filter(Behavior::isSubscribed).forEach(behavior -> behavior.parse(List.of(update)));
-        } catch (Exception e) {
-            if (skipFailed) {
-                log.error("Can't parse updates", e);
-
-                return ResponseEntity.ok().build();
-            }
-
-            return ResponseEntity.badRequest().build();
-        }
+        parse(List.of(update), null);
 
         return ResponseEntity.ok().build();
     }

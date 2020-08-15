@@ -88,9 +88,9 @@ class WebhookTelegramBotTest {
 
     private fun createBot(skipFailed: Boolean? = null): WebhookTelegramBot {
         return if (skipFailed == null) {
-            object : WebhookTelegramBot("token", "url", setOf(behavior, behavior2)) {}
+            object : WebhookTelegramBot("token", "url", setOf(behavior, behavior2), setOf()) {}
         } else {
-            object : WebhookTelegramBot("token", "url", null, setOf(behavior, behavior2), skipFailed) {}
+            object : WebhookTelegramBot("token", "url", null, setOf(behavior, behavior2), setOf(), skipFailed) {}
         }
     }
 }

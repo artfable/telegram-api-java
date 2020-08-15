@@ -1,6 +1,8 @@
 package org.artfable.telegram.api;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -20,21 +22,23 @@ abstract class AbstractTelegramBot {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractTelegramBot.class);
 
-    boolean skipFailed;
-    Set<Behavior> behaviors;
+    private boolean skipFailed;
+    private Set<Behavior> behaviors;
+    private Set<CallbackBehaviour> callbackBehaviours;
 
-    String token;
-    TelegramSender telegramSender;
+    private String token;
 
     @Autowired
     @Qualifier("telegramBotRestTemplate")
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
+
+    TelegramSender telegramSender;
 
     /**
      * {@link #skipFailed} true by default
      */
-    public AbstractTelegramBot(String token, Set<Behavior> behaviors) {
-        this(token, behaviors, true);
+    public AbstractTelegramBot(String token, Set<Behavior> behaviors, Set<CallbackBehaviour> callbackBehaviours) {
+        this(token, behaviors, callbackBehaviours, true);
     }
 
     /**
@@ -43,9 +47,10 @@ abstract class AbstractTelegramBot {
      * @param behaviors
      * @param skipFailed - if true, will continue execution even if some of {@link #behaviors} trows an exception
      */
-    public AbstractTelegramBot(String token, Set<Behavior> behaviors, boolean skipFailed) {
+    public AbstractTelegramBot(String token, Set<Behavior> behaviors, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
         this.token = token;
         this.behaviors = behaviors;
+        this.callbackBehaviours = callbackBehaviours;
         this.skipFailed = skipFailed;
     }
 
@@ -53,5 +58,26 @@ abstract class AbstractTelegramBot {
     private void init() {
         this.telegramSender = new TelegramSenderImpl(restTemplate, token);
         this.behaviors.forEach(behavior -> behavior.init(telegramSender));
+    }
+
+    protected void parse(List<Update> updates, Runnable skipFailAction) {
+        try {
+            List<Update> nonProcessedUpdates = updates.parallelStream()
+                    .filter(update -> callbackBehaviours.parallelStream().noneMatch(callbackBehaviour -> callbackBehaviour.parse(update)))
+                    .collect(Collectors.toList());
+
+            if (!nonProcessedUpdates.isEmpty()) {
+                behaviors.parallelStream().filter(Behavior::isSubscribed).forEach(behavior -> behavior.parse(nonProcessedUpdates));
+            }
+        } catch (Exception e) {
+            if (skipFailed) {
+                log.error("Can't parse updates", e);
+                if (skipFailAction != null) {
+                    skipFailAction.run();
+                }
+            } else {
+                throw new IllegalArgumentException("Can't parse updates", e);
+            }
+        }
     }
 }

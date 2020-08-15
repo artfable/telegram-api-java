@@ -28,17 +28,17 @@ public abstract class LongPollingTelegramBot extends AbstractTelegramBot {
     private TaskExecutor taskExecutor;
 
     /**
-     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set)
+     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set)
      */
-    public LongPollingTelegramBot(String token, Set<Behavior> behaviors) {
-        super(token, behaviors);
+    public LongPollingTelegramBot(String token, Set<Behavior> behaviors, Set<CallbackBehaviour> callbackBehaviours) {
+        super(token, behaviors, callbackBehaviours);
     }
 
     /**
-     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, boolean)
+     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set, boolean)
      */
-    public LongPollingTelegramBot(String token, Set<Behavior> behaviors, boolean skipFailed) {
-        super(token, behaviors, skipFailed);
+    public LongPollingTelegramBot(String token, Set<Behavior> behaviors, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
+        super(token, behaviors, callbackBehaviours, skipFailed);
     }
 
     @PostConstruct
@@ -55,17 +55,7 @@ public abstract class LongPollingTelegramBot extends AbstractTelegramBot {
         List<Update> result = telegramSender.executeMethod(new GetUpdatesRequest(lastId != null ? lastId + 1 : null, 100, null, null));
         Long updateId = result.isEmpty() ? null : result.get(result.size() - 1).getUpdateId();
 
-        try {
-            behaviors.parallelStream().filter(Behavior::isSubscribed).forEach(behavior -> behavior.parse(result));
-        } catch (Exception e) {
-            if (skipFailed) {
-                log.error("Can't parse updates", e);
-                taskExecutor.execute(() -> this.subscribeToUpdates(updateId));
-                return;
-            } else {
-                throw e;
-            }
-        }
+        parse(result, () -> taskExecutor.execute(() -> this.subscribeToUpdates(updateId)));
 
         taskExecutor.execute(() -> this.subscribeToUpdates(updateId));
     }

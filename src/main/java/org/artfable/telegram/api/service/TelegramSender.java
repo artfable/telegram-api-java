@@ -3,6 +3,10 @@ package org.artfable.telegram.api.service;
 import org.artfable.telegram.api.request.TelegramRequest;
 
 /**
+ * Allow to send requests to Telegram API.
+ *
+ * @see TelegramRequest
+ *
  * @author artfable
  *         25.01.17
  */
