@@ -23,7 +23,7 @@ abstract class AbstractTelegramBot {
     private static final Logger log = LoggerFactory.getLogger(AbstractTelegramBot.class);
 
     private boolean skipFailed;
-    private Set<Behavior> behaviors;
+    private Set<Behaviour> behaviours;
     private Set<CallbackBehaviour> callbackBehaviours;
 
     private String token;
@@ -37,19 +37,19 @@ abstract class AbstractTelegramBot {
     /**
      * {@link #skipFailed} true by default
      */
-    public AbstractTelegramBot(String token, Set<Behavior> behaviors, Set<CallbackBehaviour> callbackBehaviours) {
-        this(token, behaviors, callbackBehaviours, true);
+    public AbstractTelegramBot(String token, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
+        this(token, behaviours, callbackBehaviours, true);
     }
 
     /**
      *
      * @param token
-     * @param behaviors
-     * @param skipFailed - if true, will continue execution even if some of {@link #behaviors} trows an exception
+     * @param behaviours
+     * @param skipFailed - if true, will continue execution even if some of {@link #behaviours} trows an exception
      */
-    public AbstractTelegramBot(String token, Set<Behavior> behaviors, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
+    public AbstractTelegramBot(String token, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
         this.token = token;
-        this.behaviors = behaviors;
+        this.behaviours = behaviours;
         this.callbackBehaviours = callbackBehaviours;
         this.skipFailed = skipFailed;
     }
@@ -57,7 +57,7 @@ abstract class AbstractTelegramBot {
     @PostConstruct
     private void init() {
         this.telegramSender = new TelegramSenderImpl(restTemplate, token);
-        this.behaviors.forEach(behavior -> behavior.init(telegramSender));
+        this.behaviours.forEach(behavior -> behavior.init(telegramSender));
     }
 
     protected void parse(List<Update> updates) {
@@ -67,7 +67,7 @@ abstract class AbstractTelegramBot {
                     .collect(Collectors.toList());
 
             if (!nonProcessedUpdates.isEmpty()) {
-                behaviors.parallelStream().filter(Behavior::isSubscribed).forEach(behavior -> behavior.parse(nonProcessedUpdates));
+                behaviours.parallelStream().filter(Behaviour::isSubscribed).forEach(behavior -> behavior.parse(nonProcessedUpdates));
             }
         } catch (Exception e) {
             if (skipFailed) {

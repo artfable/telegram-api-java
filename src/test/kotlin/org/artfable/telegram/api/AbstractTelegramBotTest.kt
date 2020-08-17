@@ -5,7 +5,6 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.*
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 
 /**
@@ -16,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 internal class AbstractTelegramBotTest {
 
     @Mock
-    private lateinit var behavior: Behavior
+    private lateinit var behaviour: Behaviour
 
     @Mock
     private lateinit var callbackBehaviour: CallbackBehaviour
@@ -30,8 +29,8 @@ internal class AbstractTelegramBotTest {
 
         bot.parse(mutableListOf(update))
 
-        verify(behavior, never()).isSubscribed
-        verify(behavior, never()).parse(anyList())
+        verify(behaviour, never()).isSubscribed
+        verify(behaviour, never()).parse(anyList())
     }
 
     @Test
@@ -39,12 +38,12 @@ internal class AbstractTelegramBotTest {
         val bot = createBot(true)
         val update = Update(1L, callbackQuery = CallbackQuery(2L))
 
-        given(behavior.isSubscribed).willReturn(true)
+        given(behaviour.isSubscribed).willReturn(true)
         given(callbackBehaviour.parse(update)).willReturn(false)
 
         bot.parse(mutableListOf(update))
 
-        verify(behavior).parse(anyList())
+        verify(behaviour).parse(anyList())
     }
 
     @Test
@@ -71,13 +70,13 @@ internal class AbstractTelegramBotTest {
 
     private fun createBot(skipFailed: Boolean): AbstractTelegramBot {
         return if (skipFailed) {
-            object : AbstractTelegramBot("token", setOf(behavior), setOf(callbackBehaviour)) {
+            object : AbstractTelegramBot("token", setOf(behaviour), setOf(callbackBehaviour)) {
                 public override fun parse(updates: MutableList<Update>?) {
                     super.parse(updates)
                 }
             }
         } else {
-            object : AbstractTelegramBot("token", setOf(behavior), setOf(callbackBehaviour), skipFailed) {
+            object : AbstractTelegramBot("token", setOf(behaviour), setOf(callbackBehaviour), skipFailed) {
                 public override fun parse(updates: MutableList<Update>?) {
                     super.parse(updates)
                 }

@@ -10,12 +10,12 @@ import java.util.List;
  * @author artfable
  *         22.01.17
  */
-public interface Behavior {
+public interface Behaviour {
 
     void init(TelegramSender telegramSender);
 
     /**
-     * Action on the start of the bot with this {@link Behavior}
+     * Action on the start of the bot with this {@link Behaviour}
      */
     void start();
 
@@ -28,7 +28,7 @@ public interface Behavior {
 
     /**
      *
-     * @return true - if {@link Behavior} should react to updates, otherwise false
+     * @return true - if {@link Behaviour} should react to updates, otherwise false
      */
     boolean isSubscribed();
 }

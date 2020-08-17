@@ -8,12 +8,12 @@ import org.artfable.telegram.api.service.TelegramSender;
  * @author artfable
  *         22.01.17
  */
-public abstract class AbstractBehavior implements Behavior {
+public abstract class AbstractBehaviour implements Behaviour {
 
     private boolean subscribed;
     private TelegramSender telegramSender;
 
-    protected AbstractBehavior(boolean subscribed) {
+    protected AbstractBehaviour(boolean subscribed) {
         this.subscribed = subscribed;
     }
 

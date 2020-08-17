@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Works with Telegram API through webhooks. Start and stop webhook automatically.
  * For self-signed certificates, public key {@link #cert} should be provided (.pem).
  * URL for the webhook - full URL for context-path of the bot. "/" should be at the end of the URL to avoid 302 response.
- * Always send {@link List} with a single update to {@link Behavior}s
+ * Always send {@link List} with a single update to {@link Behaviour}s
  *
  * @author aveselov
  * @since 02/08/2020
@@ -38,8 +38,8 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
      *
      * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set)
      */
-    public WebhookTelegramBot(String token, String url, Set<Behavior> behaviors, Set<CallbackBehaviour> callbackBehaviours) {
-        this(token, url, null, behaviors, callbackBehaviours);
+    public WebhookTelegramBot(String token, String url, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
+        this(token, url, null, behaviours, callbackBehaviours);
     }
 
     /**
@@ -48,8 +48,8 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
      *
      * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set)
      */
-    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behavior> behaviors, Set<CallbackBehaviour> callbackBehaviours) {
-        super(token, behaviors, callbackBehaviours);
+    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
+        super(token, behaviours, callbackBehaviours);
         this.url = url;
         this.cert = cert;
     }
@@ -60,8 +60,8 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
      *
      * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set, boolean)
      */
-    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behavior> behaviors, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
-        super(token, behaviors, callbackBehaviours, skipFailed);
+    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
+        super(token, behaviours, callbackBehaviours, skipFailed);
         this.url = url;
         this.cert = cert;
     }

@@ -18,23 +18,23 @@ import org.springframework.test.util.ReflectionTestUtils
 @ExtendWith(MockitoExtension::class)
 class WebhookTelegramBotTest {
     @Mock
-    private lateinit var behavior: Behavior
+    private lateinit var behaviour: Behaviour
 
     @Mock
-    private lateinit var behavior2: Behavior
+    private lateinit var behaviour2: Behaviour
 
     @Test
     fun getUpdate() {
         val webhookTelegramBot = createBot()
         val update = Update(1L)
 
-        given(behavior.isSubscribed).willReturn(true)
-        given(behavior2.isSubscribed).willReturn(true)
+        given(behaviour.isSubscribed).willReturn(true)
+        given(behaviour2.isSubscribed).willReturn(true)
 
         val responseEntity: ResponseEntity<out Any?>? = ReflectionTestUtils.invokeMethod(webhookTelegramBot, "getUpdate", update)
 
-        verify(behavior).parse(eq(listOf(update)))
-        verify(behavior2).parse(eq(listOf(update)))
+        verify(behaviour).parse(eq(listOf(update)))
+        verify(behaviour2).parse(eq(listOf(update)))
 
         assertEquals(ResponseEntity.ok().build<Any?>(), responseEntity)
     }
@@ -44,13 +44,13 @@ class WebhookTelegramBotTest {
         val webhookTelegramBot = createBot()
         val update = Update(1L)
 
-        given(behavior.isSubscribed).willReturn(false)
-        given(behavior2.isSubscribed).willReturn(true)
+        given(behaviour.isSubscribed).willReturn(false)
+        given(behaviour2.isSubscribed).willReturn(true)
 
         val responseEntity: ResponseEntity<out Any?>? = ReflectionTestUtils.invokeMethod(webhookTelegramBot, "getUpdate", update)
 
-        verify(behavior, never()).parse(eq(listOf(update)))
-        verify(behavior2).parse(eq(listOf(update)))
+        verify(behaviour, never()).parse(eq(listOf(update)))
+        verify(behaviour2).parse(eq(listOf(update)))
 
         assertEquals(ResponseEntity.ok().build<Any?>(), responseEntity)
     }
@@ -60,13 +60,13 @@ class WebhookTelegramBotTest {
         val webhookTelegramBot = createBot()
         val update = Update(1L)
 
-        given(behavior.isSubscribed).willReturn(true)
-        given(behavior2.isSubscribed).willReturn(true)
-        given(behavior.parse(eq(listOf(update)))).willThrow(IllegalArgumentException::class.java)
+        given(behaviour.isSubscribed).willReturn(true)
+        given(behaviour2.isSubscribed).willReturn(true)
+        given(behaviour.parse(eq(listOf(update)))).willThrow(IllegalArgumentException::class.java)
 
         val responseEntity: ResponseEntity<out Any?>? = ReflectionTestUtils.invokeMethod(webhookTelegramBot, "getUpdate", update)
 
-        verify(behavior2).parse(eq(listOf(update)))
+        verify(behaviour2).parse(eq(listOf(update)))
 
         assertEquals(ResponseEntity.ok().build<Any?>(), responseEntity)
     }
@@ -76,22 +76,22 @@ class WebhookTelegramBotTest {
         val webhookTelegramBot = createBot(false)
         val update = Update(1L)
 
-        given(behavior.isSubscribed).willReturn(true)
-        given(behavior2.isSubscribed).willReturn(true)
-        given(behavior.parse(eq(listOf(update)))).willThrow(RuntimeException::class.java)
+        given(behaviour.isSubscribed).willReturn(true)
+        given(behaviour2.isSubscribed).willReturn(true)
+        given(behaviour.parse(eq(listOf(update)))).willThrow(RuntimeException::class.java)
 
         assertThrows<IllegalArgumentException> {
             ReflectionTestUtils.invokeMethod(webhookTelegramBot, "getUpdate", update)
         }
 
-        verify(behavior2).parse(eq(listOf(update)))
+        verify(behaviour2).parse(eq(listOf(update)))
     }
 
     private fun createBot(skipFailed: Boolean? = null): WebhookTelegramBot {
         return if (skipFailed == null) {
-            object : WebhookTelegramBot("token", "url", setOf(behavior, behavior2), setOf()) {}
+            object : WebhookTelegramBot("token", "url", setOf(behaviour, behaviour2), setOf()) {}
         } else {
-            object : WebhookTelegramBot("token", "url", null, setOf(behavior, behavior2), setOf(), skipFailed) {}
+            object : WebhookTelegramBot("token", "url", null, setOf(behaviour, behaviour2), setOf(), skipFailed) {}
         }
     }
 }
