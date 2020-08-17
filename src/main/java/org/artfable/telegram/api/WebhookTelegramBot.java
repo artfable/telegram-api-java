@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Works with Telegram API through webhooks. Start and stop webhook automatically.
  * For self-signed certificates, public key {@link #cert} should be provided (.pem).
  * URL for the webhook - full URL for context-path of the bot. "/" should be at the end of the URL to avoid 302 response.
- * Always send {@link List} with a single update to {@link Behavior}s
+ * Always send {@link List} with a single update to {@link Behaviour}s
  *
  * @author aveselov
  * @since 02/08/2020
@@ -36,20 +36,20 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
     /**
      * @param url - full url for the webhook
      *
-     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set)
+     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set)
      */
-    public WebhookTelegramBot(String token, String url, Set<Behavior> behaviors) {
-        this(token, url, null, behaviors);
+    public WebhookTelegramBot(String token, String url, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
+        this(token, url, null, behaviours, callbackBehaviours);
     }
 
     /**
      * @param url - full url for the webhook
      * @param cert - public key (.pem) for the self-signed certificate of a server with the webhook
      *
-     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set)
+     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set)
      */
-    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behavior> behaviors) {
-        super(token, behaviors);
+    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
+        super(token, behaviours, callbackBehaviours);
         this.url = url;
         this.cert = cert;
     }
@@ -58,10 +58,10 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
      * @param url - full url for the webhook
      * @param cert - public key (.pem) for the self-signed certificate of a server with the webhook
      *
-     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, boolean)
+     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set, boolean)
      */
-    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behavior> behaviors, boolean skipFailed) {
-        super(token, behaviors, skipFailed);
+    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
+        super(token, behaviours, callbackBehaviours, skipFailed);
         this.url = url;
         this.cert = cert;
     }
@@ -79,17 +79,7 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
     @PostMapping
     public ResponseEntity getUpdate(@RequestBody Update update) {
         log.debug("Update received: " + update.getUpdateId());
-        try {
-            behaviors.parallelStream().filter(Behavior::isSubscribed).forEach(behavior -> behavior.parse(List.of(update)));
-        } catch (Exception e) {
-            if (skipFailed) {
-                log.error("Can't parse updates", e);
-
-                return ResponseEntity.ok().build();
-            }
-
-            return ResponseEntity.badRequest().build();
-        }
+        parse(List.of(update));
 
         return ResponseEntity.ok().build();
     }

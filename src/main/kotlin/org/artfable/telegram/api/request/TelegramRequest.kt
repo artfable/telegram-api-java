@@ -16,9 +16,9 @@ import java.util.*
  * @since 04/08/2020
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-abstract class TelegramRequest(
+abstract class TelegramRequest<T>(
         @JsonIgnore val method: TelegramBotMethod,
-        @JsonIgnore val responseType: ParameterizedTypeReference<out TelegramResponse<out Any?>>
+        @JsonIgnore val responseType: ParameterizedTypeReference<out TelegramResponse<T>>
 ) {
     @JsonIgnore
     val id: UUID = UUID.randomUUID()

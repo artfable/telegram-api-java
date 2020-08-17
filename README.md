@@ -36,3 +36,11 @@ Automatically setup a webhook (proper configuration should be provided).
  
 For generating self-signed certificate see [Telegram Bot FAQ](https://core.telegram.org/bots/self-signed). 
 **_Note!_** CN **must** be a domain name or ip address. 
+
+### Behaviour
+
+It represents actions that can be done by the bot. Can react to user messages or execute logic independently.
+
+### CallbackBehaviour
+
+It represents actions that can be done in response to click on the bot's buttons by user. All that behaviours should have base class AbstractCallbackBehaviour.

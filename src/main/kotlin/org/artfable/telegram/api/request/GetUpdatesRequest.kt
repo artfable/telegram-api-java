@@ -16,7 +16,7 @@ data class GetUpdatesRequest(
         @JsonProperty("timeout") val timeout: Int? = null,
         @JsonProperty("limit") val limit: Int? = null,
         @JsonProperty("allowed_updates") val allowedUpdates: Array<UpdateType>? = null
-): TelegramRequest(TelegramBotMethod.GET_UPDATES, object: ParameterizedTypeReference<TelegramResponse<List<Update>>>() {}) {
+): TelegramRequest<@JvmSuppressWildcards List<Update>>(TelegramBotMethod.GET_UPDATES, object: ParameterizedTypeReference<TelegramResponse<List<Update>>>() {}) {
     init {
         timeout?.let { check(it >= 0) }
         limit?.let { check(it >= 1 || it <= 100) }

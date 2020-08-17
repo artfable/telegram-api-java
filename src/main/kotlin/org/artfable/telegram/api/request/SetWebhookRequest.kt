@@ -20,7 +20,7 @@ data class SetWebhookRequest(
         @JsonProperty("url") val url: String,
         @JsonProperty("certificate") val certificate: Resource? = null,
         @JsonProperty("allowed_updates") val allowedUpdates: Array<UpdateType>? = null
-): TelegramRequest(TelegramBotMethod.SET_WEBHOOK, object: ParameterizedTypeReference<TelegramResponse<Boolean>>() {}) {
+): TelegramRequest<Boolean>(TelegramBotMethod.SET_WEBHOOK, object: ParameterizedTypeReference<TelegramResponse<Boolean>>() {}) {
     override fun asEntity(): HttpEntity<out Any?> {
         certificate ?: return HttpEntity(this)
 

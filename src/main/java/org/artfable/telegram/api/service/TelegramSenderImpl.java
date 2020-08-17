@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * @author artfable
- *         25.01.17
+ * 25.01.17
  */
 public class TelegramSenderImpl implements TelegramSender {
 
@@ -35,15 +35,10 @@ public class TelegramSenderImpl implements TelegramSender {
     }
 
     @Override
-    public <T> T executeMethod(TelegramRequest telegramRequest) {
+    public <T> T executeMethod(TelegramRequest<T> telegramRequest) {
         log.debug("Sending request " + telegramRequest.getId() + " " + telegramRequest);
 
-        TelegramResponse<T> response;
-        try {
-            response = send(telegramRequest);
-        } catch (Exception e) {
-            throw new TelegramServerException("Can't execute request", e);
-        }
+        TelegramResponse<T> response = send(telegramRequest);
 
         log.debug("Get response (request " + telegramRequest.getId() + ") " + response);
 
@@ -58,7 +53,7 @@ public class TelegramSenderImpl implements TelegramSender {
     }
 
     @Override
-    public <T> T singleExecuteMethod(Long forUpdate, TelegramRequest telegramRequest) {
+    public <T> T singleExecuteMethod(Long forUpdate, TelegramRequest<T> telegramRequest) {
         if (!updateIds.contains(forUpdate)) {
             synchronized (updateIds) {
                 if (updateIds.add(forUpdate)) {
@@ -70,10 +65,14 @@ public class TelegramSenderImpl implements TelegramSender {
         return null;
     }
 
-    private  <T> TelegramResponse<T> send(TelegramRequest telegramRequest) {
-        return (TelegramResponse<T>) restTemplate
-                .exchange(UrlHelper.getUri(URL, getUrlParams(telegramRequest.getMethod())), HttpMethod.POST, telegramRequest.asEntity(), telegramRequest.getResponseType())
-                .getBody();
+    private <T> TelegramResponse<T> send(TelegramRequest<T> telegramRequest) {
+        try {
+            return restTemplate
+                    .exchange(UrlHelper.getUri(URL, getUrlParams(telegramRequest.getMethod())), HttpMethod.POST, telegramRequest.asEntity(), telegramRequest.getResponseType())
+                    .getBody();
+        } catch (Exception e) {
+            throw new TelegramServerException("Can't execute request", e);
+        }
     }
 
     private Map<String, String> getUrlParams(TelegramBotMethod method) {

@@ -9,7 +9,7 @@ import org.springframework.core.ParameterizedTypeReference
  * @since 06/08/2020
  */
 class DeleteWebhookRequest():
-        TelegramRequest(TelegramBotMethod.DELETE_WEBHOOK, object: ParameterizedTypeReference<TelegramResponse<Boolean>>() {}) {
+        TelegramRequest<Boolean>(TelegramBotMethod.DELETE_WEBHOOK, object: ParameterizedTypeReference<TelegramResponse<Boolean>>() {}) {
 
     override fun toString(): String {
         return "DeleteWebhookRequest"

@@ -1,6 +1,8 @@
 package org.artfable.telegram.api;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -20,38 +22,59 @@ abstract class AbstractTelegramBot {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractTelegramBot.class);
 
-    boolean skipFailed;
-    Set<Behavior> behaviors;
+    private boolean skipFailed;
+    private Set<Behaviour> behaviours;
+    private Set<CallbackBehaviour> callbackBehaviours;
 
-    String token;
-    TelegramSender telegramSender;
+    private String token;
 
     @Autowired
     @Qualifier("telegramBotRestTemplate")
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
+
+    TelegramSender telegramSender;
 
     /**
      * {@link #skipFailed} true by default
      */
-    public AbstractTelegramBot(String token, Set<Behavior> behaviors) {
-        this(token, behaviors, true);
+    public AbstractTelegramBot(String token, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
+        this(token, behaviours, callbackBehaviours, true);
     }
 
     /**
      *
      * @param token
-     * @param behaviors
-     * @param skipFailed - if true, will continue execution even if some of {@link #behaviors} trows an exception
+     * @param behaviours
+     * @param skipFailed - if true, will continue execution even if some of {@link #behaviours} trows an exception
      */
-    public AbstractTelegramBot(String token, Set<Behavior> behaviors, boolean skipFailed) {
+    public AbstractTelegramBot(String token, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
         this.token = token;
-        this.behaviors = behaviors;
+        this.behaviours = behaviours;
+        this.callbackBehaviours = callbackBehaviours;
         this.skipFailed = skipFailed;
     }
 
     @PostConstruct
     private void init() {
         this.telegramSender = new TelegramSenderImpl(restTemplate, token);
-        this.behaviors.forEach(behavior -> behavior.init(telegramSender));
+        this.behaviours.forEach(behavior -> behavior.init(telegramSender));
+    }
+
+    protected void parse(List<Update> updates) {
+        try {
+            List<Update> nonProcessedUpdates = updates.parallelStream()
+                    .filter(update -> callbackBehaviours.parallelStream().noneMatch(callbackBehaviour -> callbackBehaviour.parse(update)))
+                    .collect(Collectors.toList());
+
+            if (!nonProcessedUpdates.isEmpty()) {
+                behaviours.parallelStream().filter(Behaviour::isSubscribed).forEach(behavior -> behavior.parse(nonProcessedUpdates));
+            }
+        } catch (Exception e) {
+            if (skipFailed) {
+                log.error("Can't parse updates", e);
+            } else {
+                throw new IllegalArgumentException("Can't parse updates", e);
+            }
+        }
     }
 }

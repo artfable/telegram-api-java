@@ -27,10 +27,10 @@ internal class LongPollingTelegramBotTest {
     private lateinit var telegramSender: TelegramSender
 
     @Mock
-    private lateinit var behavior: Behavior
+    private lateinit var behaviour: Behaviour
 
     @Mock
-    private lateinit var behavior2: Behavior
+    private lateinit var behaviour2: Behaviour
 
     @Test
     fun subscribeToUpdates() {
@@ -38,13 +38,13 @@ internal class LongPollingTelegramBotTest {
         val updates = listOf(Update(1L))
 
         given(telegramSender.executeMethod<List<Update>>(GetUpdatesRequest(timeout = 100))).willReturn(updates)
-        given(behavior.isSubscribed).willReturn(true)
-        given(behavior2.isSubscribed).willReturn(true)
+        given(behaviour.isSubscribed).willReturn(true)
+        given(behaviour2.isSubscribed).willReturn(true)
 
         ReflectionTestUtils.invokeMethod<Void>(longPollingTelegramBot, "subscribeToUpdates", null)
 
-        verify(behavior).parse(updates)
-        verify(behavior2).parse(updates)
+        verify(behaviour).parse(updates)
+        verify(behaviour2).parse(updates)
         verify(taskExecutor).execute(any())
     }
 
@@ -54,13 +54,13 @@ internal class LongPollingTelegramBotTest {
         val updates = listOf(Update(1L))
 
         given(telegramSender.executeMethod<List<Update>>(GetUpdatesRequest(timeout = 100))).willReturn(updates)
-        given(behavior.isSubscribed).willReturn(false)
-        given(behavior2.isSubscribed).willReturn(true)
+        given(behaviour.isSubscribed).willReturn(false)
+        given(behaviour2.isSubscribed).willReturn(true)
 
         ReflectionTestUtils.invokeMethod<Void>(longPollingTelegramBot, "subscribeToUpdates", null)
 
-        verify(behavior, never()).parse(updates)
-        verify(behavior2).parse(updates)
+        verify(behaviour, never()).parse(updates)
+        verify(behaviour2).parse(updates)
         verify(taskExecutor).execute(any())
     }
 
@@ -70,13 +70,13 @@ internal class LongPollingTelegramBotTest {
         val updates = listOf(Update(1L))
 
         given(telegramSender.executeMethod<List<Update>>(GetUpdatesRequest(timeout = 100))).willReturn(updates)
-        given(behavior.parse(updates)).willThrow(IllegalArgumentException::class.java)
-        given(behavior.isSubscribed).willReturn(true)
-        given(behavior2.isSubscribed).willReturn(true)
+        given(behaviour.parse(updates)).willThrow(IllegalArgumentException::class.java)
+        given(behaviour.isSubscribed).willReturn(true)
+        given(behaviour2.isSubscribed).willReturn(true)
 
         ReflectionTestUtils.invokeMethod<Void>(longPollingTelegramBot, "subscribeToUpdates", null)
 
-        verify(behavior2).parse(updates)
+        verify(behaviour2).parse(updates)
         verify(taskExecutor).execute(any())
     }
 
@@ -86,23 +86,23 @@ internal class LongPollingTelegramBotTest {
         val updates = listOf(Update(1L))
 
         given(telegramSender.executeMethod<List<Update>>(GetUpdatesRequest(timeout = 100))).willReturn(updates)
-        given(behavior.parse(updates)).willThrow(IllegalArgumentException::class.java)
-        given(behavior.isSubscribed).willReturn(true)
-        given(behavior2.isSubscribed).willReturn(true)
+        given(behaviour.parse(updates)).willThrow(IllegalArgumentException::class.java)
+        given(behaviour.isSubscribed).willReturn(true)
+        given(behaviour2.isSubscribed).willReturn(true)
 
         assertThrows<IllegalArgumentException> {
             ReflectionTestUtils.invokeMethod<Void>(longPollingTelegramBot, "subscribeToUpdates", null)
         }
 
-        verify(behavior2).parse(updates)
+        verify(behaviour2).parse(updates)
         verify(taskExecutor, never()).execute(any())
     }
 
     private fun createBot(skipFailed: Boolean? = null): LongPollingTelegramBot {
         val longPollingTelegramBot = if (skipFailed == null) {
-            object : LongPollingTelegramBot("token", setOf(behavior, behavior2)) {}
+            object : LongPollingTelegramBot("token", setOf(behaviour, behaviour2), setOf()) {}
         } else {
-            object : LongPollingTelegramBot("token", setOf(behavior, behavior2), skipFailed) {}
+            object : LongPollingTelegramBot("token", setOf(behaviour, behaviour2), setOf(), skipFailed) {}
         }
         ReflectionTestUtils.setField(longPollingTelegramBot, "taskExecutor", taskExecutor)
         ReflectionTestUtils.setField(longPollingTelegramBot, "telegramSender", telegramSender)
