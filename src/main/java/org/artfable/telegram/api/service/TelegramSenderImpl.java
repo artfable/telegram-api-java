@@ -13,13 +13,17 @@ import org.artfable.telegram.api.request.TelegramRequest;
 import org.artfable.telegram.api.TelegramResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 /**
  * @author artfable
  * 25.01.17
  */
+@Service
 public class TelegramSenderImpl implements TelegramSender {
 
     private static final Logger log = LoggerFactory.getLogger(TelegramSenderImpl.class);
@@ -29,7 +33,8 @@ public class TelegramSenderImpl implements TelegramSender {
 
     private final Set<Long> updateIds = Collections.newSetFromMap(new WeakHashMap<>());
 
-    public TelegramSenderImpl(RestTemplate restTemplate, String token) {
+    @Autowired
+    public TelegramSenderImpl(RestTemplate restTemplate, @Value("${telegram.bot.token}") String token) {
         this.restTemplate = restTemplate;
         this.token = token;
     }

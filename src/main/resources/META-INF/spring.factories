@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.artfable.telegram.api.config.RestTemplateConfig
+  org.artfable.telegram.api.TelegramBotAutoConfig

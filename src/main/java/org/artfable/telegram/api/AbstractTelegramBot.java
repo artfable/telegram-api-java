@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
-import org.artfable.telegram.api.service.TelegramSender;
-import org.artfable.telegram.api.service.TelegramSenderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +30,6 @@ abstract class AbstractTelegramBot {
     @Qualifier("telegramBotRestTemplate")
     private RestTemplate restTemplate;
 
-    TelegramSender telegramSender;
-
     /**
      * {@link #skipFailed} true by default
      */
@@ -56,8 +52,7 @@ abstract class AbstractTelegramBot {
 
     @PostConstruct
     private void init() {
-        this.telegramSender = new TelegramSenderImpl(restTemplate, token);
-        this.behaviours.forEach(behavior -> behavior.init(telegramSender));
+        this.behaviours.forEach(Behaviour::start);
     }
 
     protected void parse(List<Update> updates) {

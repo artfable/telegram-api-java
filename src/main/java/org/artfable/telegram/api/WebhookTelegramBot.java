@@ -8,8 +8,10 @@ import javax.annotation.PreDestroy;
 
 import org.artfable.telegram.api.request.DeleteWebhookRequest;
 import org.artfable.telegram.api.request.SetWebhookRequest;
+import org.artfable.telegram.api.service.TelegramSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +34,9 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
 
     private String url;
     private Resource cert;
+
+    @Autowired
+    private TelegramSender telegramSender;
 
     /**
      * @param url - full url for the webhook

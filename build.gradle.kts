@@ -15,7 +15,7 @@ buildscript {
 
 plugins {
     java
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4.0"
     id("com.jfrog.bintray") version "1.8.5"
 }
 
@@ -23,9 +23,9 @@ apply(plugin = "artfable.artifact")
 apply(plugin = "maven-publish")
 
 group = "org.artfable"
-version = "0.3.0"
+version = "0.3.1"
 
-val kotlin_version = "1.3.72"
+val kotlin_version = "1.4.0"
 val spring_version = "5.2.8.RELEASE"
 val jackson_version = "2.11.1"
 val slf4j_version = "1.7.22"
@@ -37,6 +37,7 @@ val mockito_version = "3.4.6"
 dependencies {
     implementation("javax.annotation:javax.annotation-api:$javax_annotation_version")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
     implementation("org.springframework:spring-context:$spring_version")
     implementation("org.springframework:spring-core:$spring_version")
     implementation("org.springframework:spring-web:$spring_version")

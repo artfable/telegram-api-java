@@ -12,12 +12,10 @@ import java.util.List;
  */
 public interface Behaviour {
 
-    void init(TelegramSender telegramSender);
-
     /**
      * Action on the start of the bot with this {@link Behaviour}
      */
-    void start();
+    default void start() {}
 
     /**
      * React to {@link Update} if {@link #isSubscribed()} true, will not be called if false.

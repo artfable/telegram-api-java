@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 
 import org.artfable.telegram.api.request.GetUpdatesRequest;
+import org.artfable.telegram.api.service.TelegramSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public abstract class LongPollingTelegramBot extends AbstractTelegramBot {
 
     @Autowired
     private TaskExecutor taskExecutor;
+
+    @Autowired
+    private TelegramSender telegramSender;
 
     /**
      * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set)

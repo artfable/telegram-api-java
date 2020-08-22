@@ -1,5 +1,7 @@
 package org.artfable.telegram.api;
 
+import java.util.List;
+
 import org.artfable.telegram.api.service.TelegramSender;
 
 /**
@@ -11,7 +13,6 @@ import org.artfable.telegram.api.service.TelegramSender;
 public abstract class AbstractBehaviour implements Behaviour {
 
     private boolean subscribed;
-    private TelegramSender telegramSender;
 
     protected AbstractBehaviour(boolean subscribed) {
         this.subscribed = subscribed;
@@ -23,14 +24,10 @@ public abstract class AbstractBehaviour implements Behaviour {
     }
 
     @Override
-    public void init(TelegramSender telegramSender) {
-        this.telegramSender = telegramSender;
-        start();
+    public void parse(List<Update> updates) {
+        updates.parallelStream().forEach(this::parse);
     }
 
-
-    protected TelegramSender getTelegramSender() {
-        return telegramSender;
-    }
+    protected abstract void parse(Update update);
 
 }

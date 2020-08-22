@@ -1,6 +1,7 @@
 package org.artfable.telegram.api;
 
 import org.artfable.telegram.api.keyboard.InlineKeyboardBtn;
+import org.artfable.telegram.api.service.TelegramSender;
 
 /**
  * Base class for all {@link CallbackBehaviour}s. Describe callback for the button with the specific {@link #key}.
@@ -39,7 +40,7 @@ public abstract class AbstractCallbackBehaviour implements CallbackBehaviour {
         return new InlineKeyboardBtn(text, key + "-" + value);
     }
 
-    public String getKey(CallbackQuery callbackQuery) {
+    private String getKey(CallbackQuery callbackQuery) {
         return callbackQuery.getData() != null ? callbackQuery.getData().replaceAll("-.*", "") : null;
     }
 
