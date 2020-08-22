@@ -4,7 +4,7 @@ Simple wrapper for using telegram api with java ([Telegram Api](https://core.tel
 Requirements:
 * Java 11
 
-*Note! [Kotlin 1.3.72](http://kotlinlang.org/) used as well. However, you can don't care about it, if you don't want to modify.*
+*Note! [Kotlin 1.4.0](http://kotlinlang.org/) used as well. However, you can don't care about it, if you don't want to modify.*
 
 Works with [Spring Framework](https://spring.io/)
 
