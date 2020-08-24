@@ -41,20 +41,20 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
     /**
      * @param url - full url for the webhook
      *
-     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set)
+     * @see AbstractTelegramBot#AbstractTelegramBot(Set, Set)
      */
-    public WebhookTelegramBot(String token, String url, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
-        this(token, url, null, behaviours, callbackBehaviours);
+    public WebhookTelegramBot(String url, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
+        this(url, null, behaviours, callbackBehaviours);
     }
 
     /**
      * @param url - full url for the webhook
      * @param cert - public key (.pem) for the self-signed certificate of a server with the webhook
      *
-     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set)
+     * @see AbstractTelegramBot#AbstractTelegramBot(Set, Set)
      */
-    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
-        super(token, behaviours, callbackBehaviours);
+    public WebhookTelegramBot(String url, Resource cert, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
+        super(behaviours, callbackBehaviours);
         this.url = url;
         this.cert = cert;
     }
@@ -63,10 +63,10 @@ public abstract class WebhookTelegramBot extends AbstractTelegramBot {
      * @param url - full url for the webhook
      * @param cert - public key (.pem) for the self-signed certificate of a server with the webhook
      *
-     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set, boolean)
+     * @see AbstractTelegramBot#AbstractTelegramBot(Set, Set, boolean)
      */
-    public WebhookTelegramBot(String token, String url, Resource cert, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
-        super(token, behaviours, callbackBehaviours, skipFailed);
+    public WebhookTelegramBot(String url, Resource cert, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
+        super(behaviours, callbackBehaviours, skipFailed);
         this.url = url;
         this.cert = cert;
     }

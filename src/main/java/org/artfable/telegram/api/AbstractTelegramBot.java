@@ -24,8 +24,6 @@ abstract class AbstractTelegramBot {
     private Set<Behaviour> behaviours;
     private Set<CallbackBehaviour> callbackBehaviours;
 
-    private String token;
-
     @Autowired
     @Qualifier("telegramBotRestTemplate")
     private RestTemplate restTemplate;
@@ -33,18 +31,16 @@ abstract class AbstractTelegramBot {
     /**
      * {@link #skipFailed} true by default
      */
-    public AbstractTelegramBot(String token, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
-        this(token, behaviours, callbackBehaviours, true);
+    public AbstractTelegramBot(Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
+        this(behaviours, callbackBehaviours, true);
     }
 
     /**
      *
-     * @param token
      * @param behaviours
      * @param skipFailed - if true, will continue execution even if some of {@link #behaviours} trows an exception
      */
-    public AbstractTelegramBot(String token, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
-        this.token = token;
+    public AbstractTelegramBot(Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
         this.behaviours = behaviours;
         this.callbackBehaviours = callbackBehaviours;
         this.skipFailed = skipFailed;

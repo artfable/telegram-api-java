@@ -70,13 +70,13 @@ internal class AbstractTelegramBotTest {
 
     private fun createBot(skipFailed: Boolean): AbstractTelegramBot {
         return if (skipFailed) {
-            object : AbstractTelegramBot("token", setOf(behaviour), setOf(callbackBehaviour)) {
+            object : AbstractTelegramBot(setOf(behaviour), setOf(callbackBehaviour)) {
                 public override fun parse(updates: MutableList<Update>?) {
                     super.parse(updates)
                 }
             }
         } else {
-            object : AbstractTelegramBot("token", setOf(behaviour), setOf(callbackBehaviour), skipFailed) {
+            object : AbstractTelegramBot(setOf(behaviour), setOf(callbackBehaviour), skipFailed) {
                 public override fun parse(updates: MutableList<Update>?) {
                     super.parse(updates)
                 }

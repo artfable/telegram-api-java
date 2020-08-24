@@ -100,9 +100,9 @@ internal class LongPollingTelegramBotTest {
 
     private fun createBot(skipFailed: Boolean? = null): LongPollingTelegramBot {
         val longPollingTelegramBot = if (skipFailed == null) {
-            object : LongPollingTelegramBot("token", setOf(behaviour, behaviour2), setOf()) {}
+            object : LongPollingTelegramBot(setOf(behaviour, behaviour2), setOf()) {}
         } else {
-            object : LongPollingTelegramBot("token", setOf(behaviour, behaviour2), setOf(), skipFailed) {}
+            object : LongPollingTelegramBot(setOf(behaviour, behaviour2), setOf(), skipFailed) {}
         }
         ReflectionTestUtils.setField(longPollingTelegramBot, "taskExecutor", taskExecutor)
         ReflectionTestUtils.setField(longPollingTelegramBot, "telegramSender", telegramSender)

@@ -32,17 +32,17 @@ public abstract class LongPollingTelegramBot extends AbstractTelegramBot {
     private TelegramSender telegramSender;
 
     /**
-     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set)
+     * @see AbstractTelegramBot#AbstractTelegramBot(Set, Set)
      */
-    public LongPollingTelegramBot(String token, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
-        super(token, behaviours, callbackBehaviours);
+    public LongPollingTelegramBot(Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
+        super(behaviours, callbackBehaviours);
     }
 
     /**
-     * @see AbstractTelegramBot#AbstractTelegramBot(String, Set, Set, boolean)
+     * @see AbstractTelegramBot#AbstractTelegramBot(Set, Set, boolean)
      */
-    public LongPollingTelegramBot(String token, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
-        super(token, behaviours, callbackBehaviours, skipFailed);
+    public LongPollingTelegramBot(Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
+        super(behaviours, callbackBehaviours, skipFailed);
     }
 
     @PostConstruct

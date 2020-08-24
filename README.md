@@ -23,7 +23,11 @@ dependencies {
 ## Usage
 
 For start create instance of LongPollingTelegramBot or WebhookTelegramBot.
-Both types require set of Behaviours - services that handling updates and do logic of the bot. 
+Both types require set of Behaviours - services that handling updates and do logic of the bot.
+
+### TelegramSender
+
+Property **telegram.bot.token** should be provided for Spring context to configure the sender.
 
 ### LongPollingTelegramBot
 
