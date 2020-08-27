@@ -28,28 +28,9 @@ class WebhookTelegramBotTest {
         val webhookTelegramBot = createBot()
         val update = Update(1L)
 
-        given(behaviour.isSubscribed).willReturn(true)
-        given(behaviour2.isSubscribed).willReturn(true)
-
         val responseEntity: ResponseEntity<out Any?>? = ReflectionTestUtils.invokeMethod(webhookTelegramBot, "getUpdate", update)
 
         verify(behaviour).parse(eq(listOf(update)))
-        verify(behaviour2).parse(eq(listOf(update)))
-
-        assertEquals(ResponseEntity.ok().build<Any?>(), responseEntity)
-    }
-
-    @Test
-    fun getUpdate_notSubscribed() {
-        val webhookTelegramBot = createBot()
-        val update = Update(1L)
-
-        given(behaviour.isSubscribed).willReturn(false)
-        given(behaviour2.isSubscribed).willReturn(true)
-
-        val responseEntity: ResponseEntity<out Any?>? = ReflectionTestUtils.invokeMethod(webhookTelegramBot, "getUpdate", update)
-
-        verify(behaviour, never()).parse(eq(listOf(update)))
         verify(behaviour2).parse(eq(listOf(update)))
 
         assertEquals(ResponseEntity.ok().build<Any?>(), responseEntity)
@@ -60,8 +41,6 @@ class WebhookTelegramBotTest {
         val webhookTelegramBot = createBot()
         val update = Update(1L)
 
-        given(behaviour.isSubscribed).willReturn(true)
-        given(behaviour2.isSubscribed).willReturn(true)
         given(behaviour.parse(eq(listOf(update)))).willThrow(IllegalArgumentException::class.java)
 
         val responseEntity: ResponseEntity<out Any?>? = ReflectionTestUtils.invokeMethod(webhookTelegramBot, "getUpdate", update)
@@ -76,8 +55,6 @@ class WebhookTelegramBotTest {
         val webhookTelegramBot = createBot(false)
         val update = Update(1L)
 
-        given(behaviour.isSubscribed).willReturn(true)
-        given(behaviour2.isSubscribed).willReturn(true)
         given(behaviour.parse(eq(listOf(update)))).willThrow(RuntimeException::class.java)
 
         assertThrows<IllegalArgumentException> {

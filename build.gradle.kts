@@ -23,10 +23,11 @@ apply(plugin = "artfable.artifact")
 apply(plugin = "maven-publish")
 
 group = "org.artfable"
-version = "0.3.2"
+version = "0.4.0"
 
 val kotlin_version = "1.4.0"
 val spring_version = "5.2.8.RELEASE"
+val spring_boot_version = "2.3.3.RELEASE"
 val jackson_version = "2.11.1"
 val slf4j_version = "1.7.22"
 val javax_annotation_version = "1.3.2"
@@ -41,6 +42,7 @@ dependencies {
     implementation("org.springframework:spring-context:$spring_version")
     implementation("org.springframework:spring-core:$spring_version")
     implementation("org.springframework:spring-web:$spring_version")
+    implementation("org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
     implementation("org.slf4j:slf4j-api:$slf4j_version")
 

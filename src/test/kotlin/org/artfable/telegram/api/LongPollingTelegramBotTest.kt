@@ -38,28 +38,10 @@ internal class LongPollingTelegramBotTest {
         val updates = listOf(Update(1L))
 
         given(telegramSender.executeMethod<List<Update>>(GetUpdatesRequest(timeout = 100))).willReturn(updates)
-        given(behaviour.isSubscribed).willReturn(true)
-        given(behaviour2.isSubscribed).willReturn(true)
 
         ReflectionTestUtils.invokeMethod<Void>(longPollingTelegramBot, "subscribeToUpdates", null)
 
         verify(behaviour).parse(updates)
-        verify(behaviour2).parse(updates)
-        verify(taskExecutor).execute(any())
-    }
-
-    @Test
-    fun subscribeToUpdates_notSubscribe() {
-        val longPollingTelegramBot = createBot()
-        val updates = listOf(Update(1L))
-
-        given(telegramSender.executeMethod<List<Update>>(GetUpdatesRequest(timeout = 100))).willReturn(updates)
-        given(behaviour.isSubscribed).willReturn(false)
-        given(behaviour2.isSubscribed).willReturn(true)
-
-        ReflectionTestUtils.invokeMethod<Void>(longPollingTelegramBot, "subscribeToUpdates", null)
-
-        verify(behaviour, never()).parse(updates)
         verify(behaviour2).parse(updates)
         verify(taskExecutor).execute(any())
     }
@@ -71,8 +53,6 @@ internal class LongPollingTelegramBotTest {
 
         given(telegramSender.executeMethod<List<Update>>(GetUpdatesRequest(timeout = 100))).willReturn(updates)
         given(behaviour.parse(updates)).willThrow(IllegalArgumentException::class.java)
-        given(behaviour.isSubscribed).willReturn(true)
-        given(behaviour2.isSubscribed).willReturn(true)
 
         ReflectionTestUtils.invokeMethod<Void>(longPollingTelegramBot, "subscribeToUpdates", null)
 
@@ -87,8 +67,6 @@ internal class LongPollingTelegramBotTest {
 
         given(telegramSender.executeMethod<List<Update>>(GetUpdatesRequest(timeout = 100))).willReturn(updates)
         given(behaviour.parse(updates)).willThrow(IllegalArgumentException::class.java)
-        given(behaviour.isSubscribed).willReturn(true)
-        given(behaviour2.isSubscribed).willReturn(true)
 
         assertThrows<IllegalArgumentException> {
             ReflectionTestUtils.invokeMethod<Void>(longPollingTelegramBot, "subscribeToUpdates", null)

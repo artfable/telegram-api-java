@@ -1,4 +1,4 @@
-# Telegram Bot Api [ ![Download](https://api.bintray.com/packages/artfable/telegram-tools/telegram-api/images/download.svg?version=0.3.2) ](https://bintray.com/artfable/telegram-tools/telegram-api/0.3.2/link)
+# Telegram Bot Api [ ![Download](https://api.bintray.com/packages/artfable/telegram-tools/telegram-api/images/download.svg?version=0.4.0) ](https://bintray.com/artfable/telegram-tools/telegram-api/0.4.0/link)
 Simple wrapper for using telegram api with java ([Telegram Api](https://core.telegram.org/bots/api)). Bot API version: 2.3.1
 
 Requirements:
@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.artfable:telegram-api:0.3.2")
+    implementation("org.artfable:telegram-api:0.4.0")
 }
 ```
 
@@ -43,7 +43,8 @@ For generating self-signed certificate see [Telegram Bot FAQ](https://core.teleg
 
 ### Behaviour
 
-It represents actions that can be done by the bot. Can react to user messages or execute logic independently.
+It represents actions that can be done by the bot in response to user actions. Will not process actions that were already handled by CallbackBehaviours.
+However, all others actions will be handled by all of registered Behaviours. 
 
 ### CallbackBehaviour
 

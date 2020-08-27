@@ -14,5 +14,9 @@ enum class TelegramBotMethod(val value: String) {
 
 //    Webhook
     SET_WEBHOOK("setWebhook"),
-    DELETE_WEBHOOK("deleteWebhook")
+    DELETE_WEBHOOK("deleteWebhook"),
+
+//    Bot settings
+    GET_MY_COMMANDS("getMyCommands"),
+    SET_MY_COMMANDS("setMyCommands")
 }

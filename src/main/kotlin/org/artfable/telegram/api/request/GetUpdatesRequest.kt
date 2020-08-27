@@ -19,7 +19,7 @@ data class GetUpdatesRequest(
 ): TelegramRequest<@JvmSuppressWildcards List<Update>>(TelegramBotMethod.GET_UPDATES, object: ParameterizedTypeReference<TelegramResponse<List<Update>>>() {}) {
     init {
         timeout?.let { check(it >= 0) }
-        limit?.let { check(it >= 1 || it <= 100) }
+        limit?.let { check(it in 1..100) }
     }
 
     override fun equals(other: Any?): Boolean {

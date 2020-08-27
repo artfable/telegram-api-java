@@ -1,11 +1,9 @@
 package org.artfable.telegram.api;
 
-import org.artfable.telegram.api.service.TelegramSender;
-
 import java.util.List;
 
 /**
- * Represent any function of the bot. Can receive updates if {@link #isSubscribed()} true.
+ * Represent any function of the bot that reacts to incoming updates.
  *
  * @author artfable
  *         22.01.17
@@ -13,20 +11,13 @@ import java.util.List;
 public interface Behaviour {
 
     /**
-     * Action on the start of the bot with this {@link Behaviour}
-     */
-    default void start() {}
-
-    /**
-     * React to {@link Update} if {@link #isSubscribed()} true, will not be called if false.
+     * React to {@link Update}
      *
      * @param updates - List of updates from Telegram API
      */
-    void parse(List<Update> updates);
+    default void parse(List<Update> updates) {
+        updates.parallelStream().forEach(this::parse);
+    }
 
-    /**
-     *
-     * @return true - if {@link Behaviour} should react to updates, otherwise false
-     */
-    boolean isSubscribed();
+    void parse(Update update);
 }

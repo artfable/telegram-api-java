@@ -46,11 +46,6 @@ abstract class AbstractTelegramBot {
         this.skipFailed = skipFailed;
     }
 
-    @PostConstruct
-    private void init() {
-        this.behaviours.forEach(Behaviour::start);
-    }
-
     protected void parse(List<Update> updates) {
         try {
             List<Update> nonProcessedUpdates = updates.parallelStream()
@@ -58,7 +53,7 @@ abstract class AbstractTelegramBot {
                     .collect(Collectors.toList());
 
             if (!nonProcessedUpdates.isEmpty()) {
-                behaviours.parallelStream().filter(Behaviour::isSubscribed).forEach(behavior -> behavior.parse(nonProcessedUpdates));
+                behaviours.parallelStream().forEach(behavior -> behavior.parse(nonProcessedUpdates));
             }
         } catch (Exception e) {
             if (skipFailed) {

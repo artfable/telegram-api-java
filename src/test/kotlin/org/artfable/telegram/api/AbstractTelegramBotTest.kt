@@ -29,7 +29,6 @@ internal class AbstractTelegramBotTest {
 
         bot.parse(mutableListOf(update))
 
-        verify(behaviour, never()).isSubscribed
         verify(behaviour, never()).parse(anyList())
     }
 
@@ -38,7 +37,6 @@ internal class AbstractTelegramBotTest {
         val bot = createBot(true)
         val update = Update(1L, callbackQuery = CallbackQuery(2L))
 
-        given(behaviour.isSubscribed).willReturn(true)
         given(callbackBehaviour.parse(update)).willReturn(false)
 
         bot.parse(mutableListOf(update))
