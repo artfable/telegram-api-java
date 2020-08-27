@@ -49,3 +49,18 @@ However, all others actions will be handled by all of registered Behaviours.
 ### CallbackBehaviour
 
 It represents actions that can be done in response to click on the bot's buttons by user. All that behaviours should have base class AbstractCallbackBehaviour.
+
+### Commands configuration
+
+To set up bots commands, provide a json file with commands description to property _telegram.bot.commands_.
+
+File example:
+
+```json
+[
+  {
+    "command": "start",
+    "description": "Start bot process"
+  }
+]
+``` 
