@@ -38,7 +38,7 @@ internal class TelegramSenderImplTest {
     @Test
     fun executeMethod() {
         val expectedMessage = Message(24L, date =  12, chat = Chat(12L, ChatType.CHANNEL))
-        val request = SendMessageRequest(22L, "text")
+        val request = SendMessageRequest("22", "text")
 
         given<ResponseEntity<out TelegramResponse<out Any?>>>(restTemplate.exchange(eq(URI("https://api.telegram.org/bottoken/sendMessage")), eq(HttpMethod.POST), eq(request.asEntity()), eq(request.responseType)))
                 .willReturn(ResponseEntity(TelegramResponse(true, null, null, expectedMessage), HttpStatus.OK))
@@ -48,7 +48,7 @@ internal class TelegramSenderImplTest {
 
     @Test
     fun executeMethod_okFalse() {
-        val request = SendMessageRequest(22L, "text")
+        val request = SendMessageRequest("22", "text")
         val errorText = "Bad Request"
 
         given<ResponseEntity<out TelegramResponse<out Any?>>>(restTemplate.exchange(eq(URI("https://api.telegram.org/bottoken/sendMessage")), eq(HttpMethod.POST), eq(request.asEntity()), eq(request.responseType)))
@@ -66,7 +66,7 @@ internal class TelegramSenderImplTest {
     fun singleExecuteMethod() {
         val updateId = 5L
         val expectedMessage = Message(24L, date =  12, chat = Chat(12L, ChatType.CHANNEL))
-        val request = SendMessageRequest(22L, "text")
+        val request = SendMessageRequest("22", "text")
 
         given<ResponseEntity<out TelegramResponse<out Any?>>>(restTemplate.exchange(eq(URI("https://api.telegram.org/bottoken/sendMessage")), eq(HttpMethod.POST), eq(request.asEntity()), eq(request.responseType)))
                 .willReturn(ResponseEntity(TelegramResponse(true, null, null, expectedMessage), HttpStatus.OK))

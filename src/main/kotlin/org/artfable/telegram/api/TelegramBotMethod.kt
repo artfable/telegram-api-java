@@ -9,6 +9,7 @@ package org.artfable.telegram.api
 enum class TelegramBotMethod(val value: String) {
     GET_UPDATES("getUpdates"),
     SEND_MESSAGE("sendMessage"),
+    SEND_POLL("sendPoll"),
     DELETE_MESSAGE("deleteMessage"),
     SEND_STICKER("sendSticker"),
 

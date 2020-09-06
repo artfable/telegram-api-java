@@ -20,6 +20,7 @@ data class Message(
         @JsonProperty("text") val text: String? = null,
         @JsonProperty("sticker") val sticker: Sticker? = null,
         @JsonProperty("caption") val caption: String? = null,
+        @JsonProperty("poll") val poll: Poll? = null,
         @JsonProperty("new_chat_title") val newChartTitle: String? = null,
         @JsonProperty("delete_chat_photo") val deleteChatPhoto: Boolean? = null,
         @JsonProperty("group_chat_created") val groupChatCreated: Boolean? = null,

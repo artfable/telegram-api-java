@@ -13,7 +13,7 @@ import org.springframework.core.ParameterizedTypeReference
  * @since 04/08/2020
  */
 data class SendMessageRequest(
-        @JsonProperty("chat_id") val chatId: Long,
+        @JsonProperty("chat_id") val chatId: String, // can be @username
         @JsonProperty("text") val text: String,
         @JsonProperty("parse_mode") val parseMode: ParseMode? = null,
         @JsonProperty("disable_web_page_preview") val disableWebPagePreview: Boolean? = null,
