@@ -13,5 +13,6 @@ data class BotCommand(
     init {
         check(command.length in 1..32)
         check(description.length in 3..256)
+        check(command.matches(Regex("^/?[a-z0-9_]*$"))) { "Commands can contain only lowercase english letters, numbers and underscores" }
     }
 }
