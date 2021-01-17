@@ -23,10 +23,10 @@ apply(plugin = "artfable.artifact")
 apply(plugin = "maven-publish")
 
 group = "org.artfable"
-version = "0.6.0"
+version = "0.6.1"
 
 val kotlin_version = "1.4.21"
-val spring_version = "5.2.8.RELEASE"
+val spring_version = "5.3.3"
 val spring_boot_version = "2.4.2"
 val jackson_version = "2.11.1"
 val slf4j_version = "1.7.22"
