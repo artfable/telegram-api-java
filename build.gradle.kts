@@ -15,7 +15,7 @@ buildscript {
 
 plugins {
     java
-    kotlin("jvm") version "1.4.0"
+    kotlin("jvm") version "1.4.21"
     id("com.jfrog.bintray") version "1.8.5"
 }
 
@@ -23,11 +23,11 @@ apply(plugin = "artfable.artifact")
 apply(plugin = "maven-publish")
 
 group = "org.artfable"
-version = "0.5.1"
+version = "0.6.0"
 
-val kotlin_version = "1.4.0"
+val kotlin_version = "1.4.21"
 val spring_version = "5.2.8.RELEASE"
-val spring_boot_version = "2.3.3.RELEASE"
+val spring_boot_version = "2.4.2"
 val jackson_version = "2.11.1"
 val slf4j_version = "1.7.22"
 val javax_annotation_version = "1.3.2"

@@ -21,6 +21,8 @@ data class Message(
         @JsonProperty("sticker") val sticker: Sticker? = null,
         @JsonProperty("caption") val caption: String? = null,
         @JsonProperty("poll") val poll: Poll? = null,
+        @JsonProperty("new_chat_members") val newChatMembers: Array<User>? = null,
+        @JsonProperty("left_chat_member") val leftChatMember: User? = null,
         @JsonProperty("new_chat_title") val newChartTitle: String? = null,
         @JsonProperty("delete_chat_photo") val deleteChatPhoto: Boolean? = null,
         @JsonProperty("group_chat_created") val groupChatCreated: Boolean? = null,
@@ -38,6 +40,7 @@ data class Message(
 //entities	Array of MessageEntity
 //audio	Audio
 //document	Document
+//dice Dice
 //game	Game
 //photo	Array of PhotoSize
 //video	Video
@@ -45,6 +48,6 @@ data class Message(
 //contact	Contact
 //location	Location
 //venue	Venue
-//new_chat_member	User
+//new_chat_members	Array<User>
 //left_chat_member	User
 //new_chat_photo Array of PhotoSize

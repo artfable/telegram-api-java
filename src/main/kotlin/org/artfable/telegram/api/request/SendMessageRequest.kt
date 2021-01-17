@@ -19,5 +19,6 @@ data class SendMessageRequest(
         @JsonProperty("disable_web_page_preview") val disableWebPagePreview: Boolean? = null,
         @JsonProperty("disable_notification") val disableNotification: Boolean? = null,
         @JsonProperty("reply_to_message_id") val replayToMessageId: Long? = null,
+        @JsonProperty("allow_sending_without_reply") val allowSendWithoutReply: Boolean? = null,
         @JsonProperty("reply_markup") val replyMarkup: InlineKeyboard? = null
 ): TelegramRequest<Message>(TelegramBotMethod.SEND_MESSAGE, object: ParameterizedTypeReference<TelegramResponse<Message>>() {})
