@@ -23,7 +23,7 @@ apply(plugin = "artfable.artifact")
 apply(plugin = "maven-publish")
 
 group = "org.artfable"
-version = "0.6.1"
+version = "0.6.2"
 
 val kotlin_version = "1.4.21"
 val spring_version = "5.3.3"
@@ -80,7 +80,7 @@ configure<PublishingExtension> {
             artifact(tasks["sourceJar"])
             artifact(tasks["javadocJar"])
             groupId = "org.artfable"
-            artifactId = "telegram-api"
+            artifactId = project.name
             version = project.version.toString()
         }
     }
@@ -96,7 +96,7 @@ configure<BintrayExtension> {
     setPublications("mavenJava")
     pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
         repo = "telegram-tools"
-        name = "telegram-api"
+        name = project.name
         setLicenses("MIT")
         vcsUrl = "https://github.com/artfable/telegram-api-java.git"
     })
