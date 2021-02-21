@@ -4,17 +4,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @author artfable
- *         22.01.17
+ * 22.01.17
  */
 abstract class AbstractTelegramBot {
 
@@ -24,10 +19,6 @@ abstract class AbstractTelegramBot {
     private Set<Behaviour> behaviours;
     private Set<CallbackBehaviour> callbackBehaviours;
 
-    @Autowired
-    @Qualifier("telegramBotRestTemplate")
-    private RestTemplate restTemplate;
-
     /**
      * {@link #skipFailed} true by default
      */
@@ -36,7 +27,6 @@ abstract class AbstractTelegramBot {
     }
 
     /**
-     *
      * @param behaviours
      * @param skipFailed - if true, will continue execution even if some of {@link #behaviours} trows an exception
      */

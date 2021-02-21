@@ -12,31 +12,25 @@ import org.artfable.telegram.api.request.GetMyCommandsRequest;
 import org.artfable.telegram.api.request.SetMyCommandsRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
+ * Send request to setup commands for the bot. Read config from {@link InputStream}
+ *
  * @author aveselov
  * @since 25/08/2020
  */
-@Service
-@ConditionalOnProperty("telegram.bot.commands")
 public class SetCommandsSetup {
 
     private static final Logger log = LoggerFactory.getLogger(SetCommandsSetup.class);
 
-    private Resource resource;
+    private InputStream resource;
     private ObjectMapper objectMapper;
     private TelegramSender telegramSender;
 
-    @Autowired
-    public SetCommandsSetup(@Value("${telegram.bot.commands}") Resource resource,
+    public SetCommandsSetup(InputStream resource,
                             ObjectMapper objectMapper,
                             TelegramSender telegramSender) {
         this.resource = resource;
@@ -46,8 +40,9 @@ public class SetCommandsSetup {
 
     @PostConstruct
     public void start() {
-        try (InputStream commandsInputStream = resource.getInputStream()) {
-            updateCommands(objectMapper.readValue(commandsInputStream, new TypeReference<List<BotCommand>>() {}));
+        try (InputStream commandsInputStream = resource) {
+            updateCommands(objectMapper.readValue(commandsInputStream, new TypeReference<List<BotCommand>>() {
+            }));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

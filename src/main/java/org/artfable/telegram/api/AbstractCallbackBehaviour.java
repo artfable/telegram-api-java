@@ -1,7 +1,6 @@
 package org.artfable.telegram.api;
 
 import org.artfable.telegram.api.keyboard.InlineKeyboardBtn;
-import org.artfable.telegram.api.service.TelegramSender;
 
 /**
  * Base class for all {@link CallbackBehaviour}s. Describe callback for the button with the specific {@link #key}.

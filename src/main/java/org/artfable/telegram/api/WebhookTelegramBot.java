@@ -1,5 +1,6 @@
 package org.artfable.telegram.api;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -11,12 +12,6 @@ import org.artfable.telegram.api.request.SetWebhookRequest;
 import org.artfable.telegram.api.service.TelegramSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Works with Telegram API through webhooks. Start and stop webhook automatically.
@@ -27,65 +22,59 @@ import org.springframework.web.bind.annotation.RestController;
  * @author aveselov
  * @since 02/08/2020
  */
-@RestController
-public abstract class WebhookTelegramBot extends AbstractTelegramBot {
+public class WebhookTelegramBot extends AbstractTelegramBot {
 
     private static final Logger log = LoggerFactory.getLogger(WebhookTelegramBot.class);
 
     private String url;
-    private Resource cert;
+    private InputStream cert;
 
-    @Autowired
     private TelegramSender telegramSender;
 
     /**
      * @param url - full url for the webhook
-     *
      * @see AbstractTelegramBot#AbstractTelegramBot(Set, Set)
      */
-    public WebhookTelegramBot(String url, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
-        this(url, null, behaviours, callbackBehaviours);
+    public WebhookTelegramBot(TelegramSender telegramSender, String url, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
+        this(telegramSender, url, null, behaviours, callbackBehaviours);
     }
 
     /**
-     * @param url - full url for the webhook
+     * @param url  - full url for the webhook
      * @param cert - public key (.pem) for the self-signed certificate of a server with the webhook
-     *
      * @see AbstractTelegramBot#AbstractTelegramBot(Set, Set)
      */
-    public WebhookTelegramBot(String url, Resource cert, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
+    public WebhookTelegramBot(TelegramSender telegramSender, String url, InputStream cert, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
         super(behaviours, callbackBehaviours);
+        this.telegramSender = telegramSender;
         this.url = url;
         this.cert = cert;
     }
 
     /**
-     * @param url - full url for the webhook
+     * @param url  - full url for the webhook
      * @param cert - public key (.pem) for the self-signed certificate of a server with the webhook
-     *
      * @see AbstractTelegramBot#AbstractTelegramBot(Set, Set, boolean)
      */
-    public WebhookTelegramBot(String url, Resource cert, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
+    public WebhookTelegramBot(TelegramSender telegramSender, String url, InputStream cert, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
         super(behaviours, callbackBehaviours, skipFailed);
+        this.telegramSender = telegramSender;
         this.url = url;
         this.cert = cert;
     }
 
     @PostConstruct
-    private void setWebhook() {
+    public void setWebhook() {
         telegramSender.executeMethod(new SetWebhookRequest(url, cert, null));
     }
 
     @PreDestroy
-    private void removeWebhook() {
+    public void removeWebhook() {
         telegramSender.executeMethod(new DeleteWebhookRequest());
     }
 
-    @PostMapping
-    public ResponseEntity getUpdate(@RequestBody Update update) {
+    public void getUpdate(Update update) {
         log.debug("Update received: " + update.getUpdateId());
         parse(List.of(update));
-
-        return ResponseEntity.ok().build();
     }
 }

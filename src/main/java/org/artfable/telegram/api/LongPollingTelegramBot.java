@@ -2,6 +2,7 @@ package org.artfable.telegram.api;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 import javax.annotation.PostConstruct;
 
@@ -9,9 +10,6 @@ import org.artfable.telegram.api.request.GetUpdatesRequest;
 import org.artfable.telegram.api.service.TelegramSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.stereotype.Service;
 
 /**
  * Works with Telegram API through long polling. This implementation should be used also for bots that don't need to receive updates.
@@ -20,33 +18,34 @@ import org.springframework.stereotype.Service;
  * @author aveselov
  * @since 03/08/2020
  */
-@Service
-public abstract class LongPollingTelegramBot extends AbstractTelegramBot {
+public class LongPollingTelegramBot extends AbstractTelegramBot {
 
     private static final Logger log = LoggerFactory.getLogger(LongPollingTelegramBot.class);
 
-    @Autowired
-    private TaskExecutor taskExecutor;
+    private Executor taskExecutor;
 
-    @Autowired
     private TelegramSender telegramSender;
 
     /**
      * @see AbstractTelegramBot#AbstractTelegramBot(Set, Set)
      */
-    public LongPollingTelegramBot(Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
+    public LongPollingTelegramBot(Executor taskExecutor, TelegramSender telegramSender, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours) {
         super(behaviours, callbackBehaviours);
+        this.taskExecutor = taskExecutor;
+        this.telegramSender = telegramSender;
     }
 
     /**
      * @see AbstractTelegramBot#AbstractTelegramBot(Set, Set, boolean)
      */
-    public LongPollingTelegramBot(Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
+    public LongPollingTelegramBot(Executor taskExecutor, TelegramSender telegramSender, Set<Behaviour> behaviours, Set<CallbackBehaviour> callbackBehaviours, boolean skipFailed) {
         super(behaviours, callbackBehaviours, skipFailed);
+        this.taskExecutor = taskExecutor;
+        this.telegramSender = telegramSender;
     }
 
     @PostConstruct
-    private void init() {
+    public void init() {
         taskExecutor.execute(() -> subscribeToUpdates(null));
     }
 

@@ -1,39 +1,32 @@
 package org.artfable.telegram.api.request
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.type.TypeReference
 import org.artfable.telegram.api.TelegramBotMethod
 import org.artfable.telegram.api.TelegramResponse
 import org.artfable.telegram.api.UpdateType
-import org.springframework.core.ParameterizedTypeReference
-import org.springframework.core.io.Resource
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.util.MultiValueMap
+import java.io.InputStream
 
 /**
  * @author aveselov
  * @since 06/08/2020
  */
 data class SetWebhookRequest(
-        @JsonProperty("url") val url: String,
-        @JsonProperty("certificate") val certificate: Resource? = null,
-        @JsonProperty("allowed_updates") val allowedUpdates: Array<UpdateType>? = null
-): TelegramRequest<Boolean>(TelegramBotMethod.SET_WEBHOOK, object: ParameterizedTypeReference<TelegramResponse<Boolean>>() {}) {
-    override fun asEntity(): HttpEntity<out Any?> {
-        certificate ?: return HttpEntity(this)
+    @JsonProperty("url") val url: String,
+    @JsonProperty("certificate") val certificate: InputStream? = null,
+    @JsonProperty("allowed_updates") val allowedUpdates: Array<UpdateType>? = null
+) : TelegramRequest<Boolean>(TelegramBotMethod.SET_WEBHOOK, object : TypeReference<TelegramResponse<Boolean>>() {}) {
+    override fun asEntity(): TelegramRequestEntity {
+        certificate ?: return TelegramRequestEntity(this)
 
-        val headers = HttpHeaders()
-        headers.contentType = MediaType.MULTIPART_FORM_DATA
+        val headers = mapOf(Pair("Content-Type", listOf("multipart/form-data")))
 
-        val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
-        body.add("url", url)
-        allowedUpdates?.let { body.add("allowed_updates", allowedUpdates) }
+        val body: MutableMap<String, List<Any>> = mutableMapOf(Pair("url", listOf(url)))
+        allowedUpdates?.let { body.put("allowed_updates", listOf(allowedUpdates)) }
 
-        body.add("certificate", certificate)
+        body["certificate"] = listOf(certificate)
 
-        return HttpEntity(body, headers)
+        return TelegramRequestEntity(body, headers)
     }
 
     override fun equals(other: Any?): Boolean {

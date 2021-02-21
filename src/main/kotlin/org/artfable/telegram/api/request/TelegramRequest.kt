@@ -2,10 +2,10 @@ package org.artfable.telegram.api.request
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.core.type.TypeReference
 import org.artfable.telegram.api.TelegramBotMethod
 import org.artfable.telegram.api.TelegramResponse
-import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.HttpEntity
+import java.lang.reflect.Type
 import java.util.*
 
 /**
@@ -17,13 +17,19 @@ import java.util.*
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 abstract class TelegramRequest<T>(
-        @JsonIgnore val method: TelegramBotMethod,
-        @JsonIgnore val responseType: ParameterizedTypeReference<out TelegramResponse<T>>
+    @JsonIgnore val method: TelegramBotMethod,
+    responseType: TypeReference<out TelegramResponse<T>>
 ) {
+
+    @JsonIgnore
+    val responseType: Type = responseType.type
+
     @JsonIgnore
     val id: UUID = UUID.randomUUID()
 
-    open fun asEntity(): HttpEntity<out Any?> {
-        return HttpEntity(this)
+    open fun asEntity(): TelegramRequestEntity {
+        return TelegramRequestEntity(this)
     }
+
+    data class TelegramRequestEntity(val body: Any, val headers: Map<String, List<String>>? = null)
 }

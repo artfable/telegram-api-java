@@ -3,12 +3,7 @@ package org.artfable.telegram.api.request
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
-import org.springframework.core.io.Resource
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.util.MultiValueMap
+import java.io.InputStream
 
 /**
  * @author aveselov
@@ -20,19 +15,19 @@ internal class SetWebhookRequestTest {
     fun asEntity_asJson() {
         val setWebhookRequest = SetWebhookRequest("test")
 
-        assertEquals(HttpEntity(setWebhookRequest), setWebhookRequest.asEntity())
+        assertEquals(TelegramRequest.TelegramRequestEntity(setWebhookRequest), setWebhookRequest.asEntity())
     }
 
     @Test
     fun asEntity_asForm() {
-        val setWebhookRequest = SetWebhookRequest("test", mock(Resource::class.java))
-        val headers = HttpHeaders()
-        headers.contentType = MediaType.MULTIPART_FORM_DATA
+        val setWebhookRequest = SetWebhookRequest("test", mock(InputStream::class.java))
+        val headers = mapOf(Pair("Content-Type", listOf("multipart/form-data")))
 
-        val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
-        body.add("url", setWebhookRequest.url)
-        body.add("certificate", setWebhookRequest.certificate)
+        val body = mutableMapOf(
+            Pair("url", listOf(setWebhookRequest.url)),
+            Pair("certificate", listOf(setWebhookRequest.certificate))
+        )
 
-        assertEquals(HttpEntity(body, headers), setWebhookRequest.asEntity())
+        assertEquals(TelegramRequest.TelegramRequestEntity(body, headers), setWebhookRequest.asEntity())
     }
 }

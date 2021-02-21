@@ -11,8 +11,10 @@ import org.mockito.Mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.core.task.TaskExecutor
-import org.springframework.test.util.ReflectionTestUtils
+import java.lang.reflect.InvocationTargetException
+import java.util.concurrent.Executor
+import kotlin.reflect.full.declaredMemberFunctions
+import kotlin.reflect.jvm.isAccessible
 
 /**
  * @author aveselov
@@ -21,7 +23,7 @@ import org.springframework.test.util.ReflectionTestUtils
 @ExtendWith(MockitoExtension::class)
 internal class LongPollingTelegramBotTest {
     @Mock
-    private lateinit var taskExecutor: TaskExecutor
+    private lateinit var taskExecutor: Executor
 
     @Mock
     private lateinit var telegramSender: TelegramSender
@@ -39,7 +41,7 @@ internal class LongPollingTelegramBotTest {
 
         given(telegramSender.executeMethod<List<Update>>(GetUpdatesRequest(timeout = 100))).willReturn(updates)
 
-        ReflectionTestUtils.invokeMethod<Void>(longPollingTelegramBot, "subscribeToUpdates", null)
+        callSubscribeToUpdates(longPollingTelegramBot)
 
         verify(behaviour).parse(updates)
         verify(behaviour2).parse(updates)
@@ -54,7 +56,7 @@ internal class LongPollingTelegramBotTest {
         given(telegramSender.executeMethod<List<Update>>(GetUpdatesRequest(timeout = 100))).willReturn(updates)
         given(behaviour.parse(updates)).willThrow(IllegalArgumentException::class.java)
 
-        ReflectionTestUtils.invokeMethod<Void>(longPollingTelegramBot, "subscribeToUpdates", null)
+        callSubscribeToUpdates(longPollingTelegramBot)
 
         verify(behaviour2).parse(updates)
         verify(taskExecutor).execute(any())
@@ -69,7 +71,7 @@ internal class LongPollingTelegramBotTest {
         given(behaviour.parse(updates)).willThrow(IllegalArgumentException::class.java)
 
         assertThrows<IllegalArgumentException> {
-            ReflectionTestUtils.invokeMethod<Void>(longPollingTelegramBot, "subscribeToUpdates", null)
+            callSubscribeToUpdates(longPollingTelegramBot)
         }
 
         verify(behaviour2).parse(updates)
@@ -77,14 +79,23 @@ internal class LongPollingTelegramBotTest {
     }
 
     private fun createBot(skipFailed: Boolean? = null): LongPollingTelegramBot {
-        val longPollingTelegramBot = if (skipFailed == null) {
-            object : LongPollingTelegramBot(setOf(behaviour, behaviour2), setOf()) {}
-        } else {
-            object : LongPollingTelegramBot(setOf(behaviour, behaviour2), setOf(), skipFailed) {}
-        }
-        ReflectionTestUtils.setField(longPollingTelegramBot, "taskExecutor", taskExecutor)
-        ReflectionTestUtils.setField(longPollingTelegramBot, "telegramSender", telegramSender)
 
-        return longPollingTelegramBot
+        return if (skipFailed == null) {
+            object : LongPollingTelegramBot(taskExecutor, telegramSender, setOf(behaviour, behaviour2), setOf()) {}
+        } else {
+            object : LongPollingTelegramBot(taskExecutor, telegramSender, setOf(behaviour, behaviour2), setOf(), skipFailed) {}
+        }
+    }
+
+    private fun callSubscribeToUpdates(bot: LongPollingTelegramBot) {
+        try {
+            LongPollingTelegramBot::class.declaredMemberFunctions.asSequence()
+                .filter { it.name == "subscribeToUpdates" }
+                .onEach { it.isAccessible = true }
+                .first()
+                .call(bot, null)
+        } catch (e: InvocationTargetException) {
+            throw e.targetException
+        }
     }
 }

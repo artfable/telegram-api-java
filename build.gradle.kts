@@ -23,7 +23,7 @@ apply(plugin = "artfable.artifact")
 apply(plugin = "maven-publish")
 
 group = "org.artfable"
-version = "0.6.2"
+version = "1.0.0"
 
 val kotlin_version = "1.4.21"
 val spring_version = "5.3.3"
@@ -36,17 +36,12 @@ val junit_version = "5.6.2"
 val mockito_version = "3.4.6"
 
 dependencies {
-    implementation("javax.annotation:javax.annotation-api:$javax_annotation_version")
+    api("javax.annotation:javax.annotation-api:$javax_annotation_version")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
-    implementation("org.springframework:spring-context:$spring_version")
-    implementation("org.springframework:spring-core:$spring_version")
-    implementation("org.springframework:spring-web:$spring_version")
-    implementation("org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
-    implementation("org.slf4j:slf4j-api:$slf4j_version")
+    api("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
+    api("org.slf4j:slf4j-api:$slf4j_version")
 
-    testImplementation("org.springframework:spring-test:$spring_version")
     testImplementation("org.junit.jupiter:junit-jupiter:$junit_version")
     testImplementation("org.mockito:mockito-junit-jupiter:$mockito_version")
 }

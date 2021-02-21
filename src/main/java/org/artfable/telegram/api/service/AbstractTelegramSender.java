@@ -1,43 +1,25 @@
 package org.artfable.telegram.api.service;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.artfable.telegram.api.TelegramBotMethod;
 import org.artfable.telegram.api.TelegramRequestException;
-import org.artfable.telegram.api.TelegramServerException;
-import org.artfable.telegram.api.UrlHelper;
-import org.artfable.telegram.api.request.TelegramRequest;
 import org.artfable.telegram.api.TelegramResponse;
+import org.artfable.telegram.api.TelegramServerException;
+import org.artfable.telegram.api.request.TelegramRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @author artfable
  * 25.01.17
  */
-@Service
-public class TelegramSenderImpl implements TelegramSender {
+public abstract class AbstractTelegramSender implements TelegramSender {
 
-    private static final Logger log = LoggerFactory.getLogger(TelegramSenderImpl.class);
-
-    private RestTemplate restTemplate;
-    private String token;
+    private static final Logger log = LoggerFactory.getLogger(AbstractTelegramSender.class);
 
     private final Set<Long> updateIds = Collections.newSetFromMap(new WeakHashMap<>());
-
-    @Autowired
-    public TelegramSenderImpl(RestTemplate restTemplate, @Value("${telegram.bot.token}") String token) {
-        this.restTemplate = restTemplate;
-        this.token = token;
-    }
 
     @Override
     public <T> T executeMethod(TelegramRequest<T> telegramRequest) {
@@ -70,20 +52,12 @@ public class TelegramSenderImpl implements TelegramSender {
         return null;
     }
 
-    private <T> TelegramResponse<T> send(TelegramRequest<T> telegramRequest) {
-        try {
-            return restTemplate
-                    .exchange(UrlHelper.getUri(URL, getUrlParams(telegramRequest.getMethod())), HttpMethod.POST, telegramRequest.asEntity(), telegramRequest.getResponseType())
-                    .getBody();
-        } catch (Exception e) {
-            throw new TelegramServerException("Can't execute request", e);
-        }
-    }
-
-    private Map<String, String> getUrlParams(TelegramBotMethod method) {
-        return Map.of(
-                "token", token,
-                "method", method.getValue()
-        );
-    }
+    /**
+     * Implementation for actual sending
+     *
+     * @param telegramRequest - request that should be send
+     * @param <T> - return type
+     * @return - {@link TelegramResponse} that specified by {@link TelegramRequest}
+     */
+    protected abstract <T> TelegramResponse<T> send(TelegramRequest<T> telegramRequest);
 }

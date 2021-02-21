@@ -7,6 +7,8 @@ import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.memberProperties
 
 /**
+ * Helper class with utils
+ *
  * @author aveselov
  * @since 22/01/2021
  */
@@ -19,13 +21,14 @@ fun Any.notNullFieldsToString(): String {
                 if (value != null) field.name + "=" + if (isPrimitive(field)) value else value.notNullFieldsToString() else null
             }
             .filterNotNull()
+            .sorted()
             .joinToString()
     })"
 }
 
 private fun isPrimitive(field: KProperty1<out Any, *>): Boolean {
-    return field.returnType.isSubtypeOf(Number::class.createType())
-            || field.returnType.isSubtypeOf(Boolean::class.createType())
-            || field.returnType.isSubtypeOf(String::class.createType())
-            || field.returnType.isSubtypeOf(Enum::class.createType(listOf(KTypeProjection(null, null))))
+    return field.returnType.isSubtypeOf(Number::class.createType(nullable = true))
+            || field.returnType.isSubtypeOf(Boolean::class.createType(nullable = true))
+            || field.returnType.isSubtypeOf(String::class.createType(nullable = true))
+            || field.returnType.isSubtypeOf(Enum::class.createType(listOf(KTypeProjection(null, null)), true))
 }

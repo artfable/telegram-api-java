@@ -8,8 +8,6 @@ import org.mockito.ArgumentMatchers.eq
 import org.mockito.BDDMockito.*
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.http.ResponseEntity
-import org.springframework.test.util.ReflectionTestUtils
 
 /**
  * @author aveselov
@@ -28,12 +26,10 @@ class WebhookTelegramBotTest {
         val webhookTelegramBot = createBot()
         val update = Update(1L)
 
-        val responseEntity: ResponseEntity<out Any?>? = ReflectionTestUtils.invokeMethod(webhookTelegramBot, "getUpdate", update)
+        webhookTelegramBot.getUpdate(update)
 
         verify(behaviour).parse(eq(listOf(update)))
         verify(behaviour2).parse(eq(listOf(update)))
-
-        assertEquals(ResponseEntity.ok().build<Any?>(), responseEntity)
     }
 
     @Test
@@ -43,11 +39,9 @@ class WebhookTelegramBotTest {
 
         given(behaviour.parse(eq(listOf(update)))).willThrow(IllegalArgumentException::class.java)
 
-        val responseEntity: ResponseEntity<out Any?>? = ReflectionTestUtils.invokeMethod(webhookTelegramBot, "getUpdate", update)
+        webhookTelegramBot.getUpdate(update)
 
         verify(behaviour2).parse(eq(listOf(update)))
-
-        assertEquals(ResponseEntity.ok().build<Any?>(), responseEntity)
     }
 
     @Test
@@ -58,7 +52,7 @@ class WebhookTelegramBotTest {
         given(behaviour.parse(eq(listOf(update)))).willThrow(RuntimeException::class.java)
 
         assertThrows<IllegalArgumentException> {
-            ReflectionTestUtils.invokeMethod(webhookTelegramBot, "getUpdate", update)
+            webhookTelegramBot.getUpdate(update)
         }
 
         verify(behaviour2).parse(eq(listOf(update)))
@@ -66,9 +60,9 @@ class WebhookTelegramBotTest {
 
     private fun createBot(skipFailed: Boolean? = null): WebhookTelegramBot {
         return if (skipFailed == null) {
-            object : WebhookTelegramBot("url", setOf(behaviour, behaviour2), setOf()) {}
+            object : WebhookTelegramBot(null,"url", setOf(behaviour, behaviour2), setOf()) {}
         } else {
-            object : WebhookTelegramBot( "url", null, setOf(behaviour, behaviour2), setOf(), skipFailed) {}
+            object : WebhookTelegramBot( null,"url", null, setOf(behaviour, behaviour2), setOf(), skipFailed) {}
         }
     }
 }
