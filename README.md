@@ -23,6 +23,8 @@ dependencies {
 For start create instance of LongPollingTelegramBot or WebhookTelegramBot.
 Both types require set of Behaviours - services that handling updates and do logic of the bot.
 
+For Spring use [starter](https://gitlab.com/artfable/telegram-api-spring-starter)
+
 ### TelegramSender
 
 Should be implemented sending logic. URL template provided in the interface.  
