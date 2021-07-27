@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.artfable.telegram:telegram-api:1.0.1")
+    implementation("com.artfable.telegram:telegram-api:1.0.1")
 }
 ```
 
