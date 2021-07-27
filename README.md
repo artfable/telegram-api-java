@@ -1,20 +1,20 @@
-# Telegram Bot Api [ ![Download](https://api.bintray.com/packages/artfable/telegram-tools/telegram-api/images/download.svg?version=1.0.0) ](https://bintray.com/artfable/telegram-tools/telegram-api/1.0.0/link)
+# Telegram Bot Api [ ![Artifactory](https://img.shields.io/badge/Artifactory-v1.0.1-green) ](https://artfable.jfrog.io/ui/packages/gav:%2F%2Fcom.artfable.telegram:telegram-api)
 A simple wrapper for using telegram api with java ([Telegram Api](https://core.telegram.org/bots/api)). Bot API version: 5.0
 
 Requirements:
 * Java 11
 
-*Note! [Kotlin 1.4.21](http://kotlinlang.org/) used as well. However, you can don't care about it, if you don't want to modify.*
+*Note! [Kotlin 1.5.21](http://kotlinlang.org/) used as well. However, you can don't care about it, if you don't want to modify.*
 
 ## Dependency
 
 ```kotlin
 repositories {
-    jcenter()
+    maven(url = "https://artfable.jfrog.io/artifactory/default-maven-local")
 }
 
 dependencies {
-    implementation("org.artfable:telegram-api:1.0.0")
+    implementation("org.artfable.telegram:telegram-api:1.0.1")
 }
 ```
 

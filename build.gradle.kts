@@ -1,31 +1,23 @@
-import com.jfrog.bintray.gradle.BintrayExtension
-
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
-        maven(url = "http://dl.bintray.com/artfable/gradle-plugins")
+        mavenCentral()
 
-    }
-
-    dependencies {
-        classpath("com.github.artfable.gradle:gradle-artifact-plugin:0.0.1")
     }
 }
 
 plugins {
     java
-    kotlin("jvm") version "1.4.21"
-    id("com.jfrog.bintray") version "1.8.5"
+    kotlin("jvm") version "1.5.21"
+    id("artfable.artifact") version "0.0.3"
+    id("com.jfrog.artifactory") version "4.24.14"
+    `maven-publish`
 }
 
-apply(plugin = "artfable.artifact")
-apply(plugin = "maven-publish")
+group = "com.artfable.telegram"
+version = "1.0.1"
 
-group = "org.artfable"
-version = "1.0.0"
-
-val kotlin_version = "1.4.21"
+val kotlin_version = "1.5.21"
 val spring_version = "5.3.3"
 val spring_boot_version = "2.4.2"
 val jackson_version = "2.11.1"
@@ -48,7 +40,7 @@ dependencies {
 
 repositories {
     mavenLocal()
-    jcenter()
+    mavenCentral()
 }
 
 java {
@@ -68,31 +60,51 @@ tasks {
     }
 }
 
-configure<PublishingExtension> {
+publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
             artifact(tasks["sourceJar"])
             artifact(tasks["javadocJar"])
-            groupId = "org.artfable"
+            groupId = project.group.toString()
             artifactId = project.name
             version = project.version.toString()
+
+            pom {
+                description.set("API for Telegram bots")
+                licenses {
+                    license {
+                        name.set("MIT")
+                        url.set("https://raw.githubusercontent.com/artfable/telegram-api-java/master/LICENSE")
+                        distribution.set("repo")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("artfable")
+                        name.set("Artem Veselov")
+                        email.set("art-fable@mail.ru")
+                    }
+                }
+            }
         }
     }
 }
 
-configure<BintrayExtension> {
-    user = if (project.hasProperty("bintrayUser")) {
-        project.ext["bintrayUser"] as String
-    } else System.getenv("BINTRAY_USER")
-    key = if (project.hasProperty("bintrayKey")) {
-        project.ext["bintrayKey"] as String
-    } else System.getenv("BINTRAY_KEY")
-    setPublications("mavenJava")
-    pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
-        repo = "telegram-tools"
-        name = project.name
-        setLicenses("MIT")
-        vcsUrl = "https://github.com/artfable/telegram-api-java.git"
-    })
+artifactory {
+    setContextUrl("https://artfable.jfrog.io/artifactory/")
+    publish {
+        repository {
+            setRepoKey("default-maven-local")
+            setUsername(artifactoryCredentials.user)
+            setPassword(artifactoryCredentials.key)
+        }
+        defaults {
+            publications ("mavenJava")
+
+            setPublishArtifacts(true)
+            setPublishPom(true)
+            setPublishIvy(false)
+        }
+    }
 }
