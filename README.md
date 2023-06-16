@@ -1,6 +1,8 @@
 # Telegram Bot Api [ ![Artifactory](https://img.shields.io/badge/Artifactory-v1.0.1-green) ](https://artfable.jfrog.io/ui/packages/gav:%2F%2Fcom.artfable.telegram:telegram-api)
 A simple wrapper for using telegram api with java ([Telegram Api](https://core.telegram.org/bots/api)). Bot API version: 5.0
 
+**Moved to:** [https://gitlab.com/artfable-public/telegram-bot-api/telegram-api-java](https://gitlab.com/artfable-public/telegram-bot-api/telegram-api-java)
+
 Requirements:
 * Java 11
 
